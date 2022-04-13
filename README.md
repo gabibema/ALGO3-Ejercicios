@@ -1,2 +1,2 @@
-# algo3leveroni
+# Algoritmos 3 Leveroni
 Ejercicios Prácticos
