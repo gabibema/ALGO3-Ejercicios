@@ -128,14 +128,14 @@ tienePolillasSuficientes
 ! !
 
 
-!Habitat class methodsFor: '--** private fileout/in **--' stamp: 'algo3 4/24/2022 20:25:30'!
+!Habitat class methodsFor: '--** private fileout/in **--' stamp: 'va 4/24/2022 20:47:03'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
-	registroDeHuevosPuestos := ((Dictionary new) add: ('L'->1); add: ('O'->0); add: ('P'->0); yourself).
-	cantidadDeOrugas := 1.
+	registroDeHuevosPuestos := ((Dictionary new) add: ('L'->0); add: ('O'->2); add: ('P'->0); yourself).
+	cantidadDeOrugas := 0.
 	cantidadDePolillas := 1.
-	cantidadDeHuevosDeAvispas := 1.! !
+	cantidadDeHuevosDeAvispas := 2.! !
 
 
 !classDefinition: #LaAvispaLara category: 'AvispasYAbejasParte2'!
@@ -151,11 +151,12 @@ DenotativeObject subclass: #LaAvispaLara
 LaAvispaLara class
 	instanceVariableNames: 'firmaGenetica'!
 
-!LaAvispaLara class methodsFor: 'as yet unclassified' stamp: 'algo3 4/24/2022 19:06:51'!
+!LaAvispaLara class methodsFor: 'genetica' stamp: 'algo3 4/24/2022 19:06:51'!
 firmaGenetica
 	^firmaGenetica.! !
 
-!LaAvispaLara class methodsFor: 'as yet unclassified' stamp: 'algo3 4/24/2022 18:19:36'!
+
+!LaAvispaLara class methodsFor: 'reproduccion' stamp: 'algo3 4/24/2022 18:19:36'!
 intentarReproducirse
 	|avispaASerRobada|
 	avispaASerRobada := Habitat avispaConHuevosPuestos.
@@ -165,7 +166,7 @@ intentarReproducirse
 	  Habitat agregarHuevoDe: self].! !
 
 
-!LaAvispaLara class methodsFor: '--** private fileout/in **--' stamp: 'algo3 4/24/2022 20:25:31'!
+!LaAvispaLara class methodsFor: '--** private fileout/in **--' stamp: 'va 4/24/2022 20:47:03'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -185,18 +186,19 @@ DenotativeObject subclass: #LaAvispaOriana
 LaAvispaOriana class
 	instanceVariableNames: 'firmaGenetica'!
 
-!LaAvispaOriana class methodsFor: 'as yet unclassified' stamp: 'algo3 4/24/2022 18:17:05'!
-firmaGenetica
-	^firmaGenetica.! !
-
-!LaAvispaOriana class methodsFor: 'as yet unclassified' stamp: 'algo3 4/24/2022 19:13:09'!
+!LaAvispaOriana class methodsFor: 'reproduccion' stamp: 'algo3 4/24/2022 19:13:09'!
 intentarReproducirse
 	Habitat tieneOrugasSuficientes ifTrue: 
 	[ Habitat agregarHuevoDe: self.
 	  Habitat consumirOruga. ].! !
 
 
-!LaAvispaOriana class methodsFor: '--** private fileout/in **--' stamp: 'algo3 4/24/2022 20:25:31'!
+!LaAvispaOriana class methodsFor: 'genetica' stamp: 'algo3 4/24/2022 18:17:05'!
+firmaGenetica
+	^firmaGenetica.! !
+
+
+!LaAvispaOriana class methodsFor: '--** private fileout/in **--' stamp: 'va 4/24/2022 20:47:04'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -216,7 +218,7 @@ LaAvispaOriana subclass: #LaAvispaOrnella
 LaAvispaOrnella class
 	instanceVariableNames: ''!
 
-!LaAvispaOrnella class methodsFor: '--** private fileout/in **--' stamp: 'algo3 4/24/2022 20:25:31'!
+!LaAvispaOrnella class methodsFor: '--** private fileout/in **--' stamp: 'va 4/24/2022 20:47:04'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -236,18 +238,19 @@ DenotativeObject subclass: #LaAvispaPolly
 LaAvispaPolly class
 	instanceVariableNames: 'firmaGenetica'!
 
-!LaAvispaPolly class methodsFor: 'as yet unclassified' stamp: 'algo3 4/24/2022 18:18:15'!
-firmaGenetica
-	^firmaGenetica.! !
-
-!LaAvispaPolly class methodsFor: 'as yet unclassified' stamp: 'algo3 4/24/2022 19:13:21'!
+!LaAvispaPolly class methodsFor: 'reproduccion' stamp: 'algo3 4/24/2022 19:13:21'!
 intentarReproducirse
 	Habitat tienePolillasSuficientes ifTrue: 
 	[ Habitat agregarHuevoDe: self.
 	  Habitat consumirPolilla.].! !
 
 
-!LaAvispaPolly class methodsFor: '--** private fileout/in **--' stamp: 'algo3 4/24/2022 20:25:31'!
+!LaAvispaPolly class methodsFor: 'genetica' stamp: 'algo3 4/24/2022 18:18:15'!
+firmaGenetica
+	^firmaGenetica.! !
+
+
+!LaAvispaPolly class methodsFor: '--** private fileout/in **--' stamp: 'va 4/24/2022 20:47:04'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
