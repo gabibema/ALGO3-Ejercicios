@@ -127,6 +127,16 @@ setUp
 	fiveHalfs := Numero with: five over: two.
 	! !
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'NumeroTest class' category: 'Numeros-Parte1-Ejercicio'!
+NumeroTest class
+	instanceVariableNames: ''!
+
+!NumeroTest class methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 20:34:37'!
+with: aValue
+	! !
+
 
 !classDefinition: #Numero category: 'Numeros-Parte1-Ejercicio'!
 Object subclass: #Numero
@@ -134,6 +144,24 @@ Object subclass: #Numero
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
+!Numero commentStamp: 'algo3 5/4/2022 20:49:35' prior: 0!
+with: aDividend over: aDivisor
+
+	| greatestCommonDivisor numerator denominator |
+	
+	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ]. "Ver si hay algo impelementado"
+	aDividend isZero ifTrue: [ ^aDividend ].
+	
+	aDivisor isNegative ifTrue: [ ^self with: aDividend negated over: aDivisor negated].
+	
+	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
+	numerator := aDividend // greatestCommonDivisor.
+	denominator := aDivisor // greatestCommonDivisor.
+	
+	denominator isOne ifTrue: [ ^numerator ].
+
+	^self new initializeWith: numerator over: denominator!
+
 
 !Numero methodsFor: 'arithmetic operations' stamp: 'algo3 5/4/2022 15:13:00'!
 * aMultiplier 
@@ -166,11 +194,9 @@ isZero
 	^self subclassResponsibility.! !
 
 
-!Numero methodsFor: 'initialization' stamp: 'NR 9/8/2019 20:40:14'!
+!Numero methodsFor: 'initialization' stamp: 'algo3 5/4/2022 20:25:08'!
 initializeWith: aValue
-	
-	type := #Entero.
-	value := aValue! !
+	self subclassResponsibility.! !
 
 !Numero methodsFor: 'initialization' stamp: 'NR 9/8/2019 20:40:23'!
 initializeWith: aNumerator over: aDenominator
@@ -220,13 +246,9 @@ printOn: aStream
 			print: denominator ].! !
 
 
-!Numero methodsFor: 'comparing' stamp: 'NR 9/8/2019 21:50:26'!
+!Numero methodsFor: 'comparing' stamp: 'algo3 5/4/2022 21:05:52'!
 = anObject
-
-	^(anObject isKindOf: self class) and: [ type = anObject type and: 
-		[ type = #Entero ifTrue: [ value = anObject integerValue] 
-		ifFalse: [ type = #Fraccion ifTrue:
-			[ (numerator * anObject denominator) = (denominator * anObject numerator) ]]]]! !
+	self subclassResponsibility.! !
 
 !Numero methodsFor: 'comparing' stamp: 'NR 9/8/2019 22:00:49'!
 hash
@@ -262,13 +284,10 @@ canNotDivideByZeroErrorDescription
 	^'No se puede dividir por cero'! !
 
 
-!Numero class methodsFor: 'instance creation' stamp: 'NR 9/8/2019 20:46:40'!
+!Numero class methodsFor: 'instance creation' stamp: 'algo3 5/4/2022 20:38:12'!
 with: aValue 
-	
-	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
-	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
-	
-	^self new initializeWith: aValue! !
+	self subclassResponsibility.
+! !
 
 !Numero class methodsFor: 'instance creation' stamp: 'NR 9/8/2019 23:20:40'!
 with: aDividend over: aDivisor
@@ -310,6 +329,14 @@ Numero subclass: #Entero
 
 	^self class with: self value // aDivisor value.! !
 
+!Entero methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 21:07:46'!
+= anInteger
+	^value = anInteger value.! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 20:40:10'!
+initializeWith: aValue
+	value:= aValue.! !
+
 !Entero methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 15:01:27'!
 isNegative
 	^value < 0.! !
@@ -321,6 +348,23 @@ isOne
 !Entero methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 14:55:55'!
 isZero
 	^value = 0.! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 21:11:40'!
+negated
+	^self * (self class with: -1).! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Entero class' category: 'Numeros-Parte1-Ejercicio'!
+Entero class
+	instanceVariableNames: ''!
+
+!Entero class methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 20:38:52'!
+with: aValue
+
+	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
+	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
+	^self new initializeWith: aValue! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte1-Ejercicio'!
@@ -334,16 +378,14 @@ Numero subclass: #Fraccion
 * aMultiplier
 	^ self class initializeWith:(self numerator * aMultiplier numerator) over: (self denominator * aMultiplier denominator).! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 15:21:08'!
-+ anAdder
-	
-	| newNumerator newDenominator |
-	
-	newNumerator := (self numerator * anAdder denominator) + (self denominator * anAdder numerator).
-	newDenominator := self numerator * anAdder denominator.
-	
-	^self class with: newNumerator over: newDenominator 
-	
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 21:06:09'!
++ aFraction
+
+! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 21:06:52'!
+= aFraction
+	^(numerator * aFraction denominator) = (denominator * aFraction numerator).
 ! !
 
 !Fraccion methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 15:05:57'!
@@ -357,3 +399,30 @@ isOne
 !Fraccion methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 14:56:46'!
 isZero
 	^false.! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 21:11:06'!
+negated
+	^self class with: numerator * (self class with: -1) over: denominator.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Fraccion class' category: 'Numeros-Parte1-Ejercicio'!
+Fraccion class
+	instanceVariableNames: ''!
+
+!Fraccion class methodsFor: 'as yet unclassified' stamp: 'algo3 5/4/2022 20:55:28'!
+with: aDividend over: aDivisor
+	| greatestCommonDivisor numerator denominator |
+	
+	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ].
+	aDividend isZero ifTrue: [ ^aDividend ].
+	
+	aDivisor isNegative ifTrue: [ ^self with: aDividend negated over: aDivisor negated].
+	
+	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
+	numerator := aDividend // greatestCommonDivisor.
+	denominator := aDivisor // greatestCommonDivisor.
+	
+	denominator isOne ifTrue: [ ^numerator ].
+
+	^self new initializeWith: numerator over: denominator! !
