@@ -344,10 +344,23 @@ isZero
 	self subclassResponsibility ! !
 
 
+!Numero methodsFor: 'private' stamp: 'va 5/7/2022 18:00:26'!
+dividesAnInteger: aDivisor
+	self subclassResponsibility.! !
+
 !Numero methodsFor: 'private' stamp: 'HernanWilkinson 5/7/2016 22:48'!
 invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
+
+
+!Numero methodsFor: 'nil' stamp: 'va 5/7/2022 16:49:50'!
+beMultipliedByAFraction: aMultiplier
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'nil' stamp: 'va 5/7/2022 17:30:04'!
+multiplyAnInteger: aMultiplier
+	self subclassResponsibility .! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -372,10 +385,10 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'va 5/7/2022 17:30:06'!
 * aMultiplier 
-	
-	^self class with: value * aMultiplier integerValue
+
+	^aMultiplier multiplyAnInteger: self.
 	! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'algo3 5/5/2022 17:16:58'!
@@ -383,15 +396,18 @@ Numero subclass: #Entero
 
 	^anAdder beAddedToAnInteger: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'va 5/7/2022 18:33:11'!
 - aSubtrahend 
-	
+	|negativeOne|
+	(aSubtrahend isKindOf: Fraction) ifTrue: [negativeOne := self class with: -1. ^ (negativeOne *aSubtrahend ) beAddedToAnInteger: self].
 	^ self class with: value - aSubtrahend integerValue.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'va 5/7/2022 18:00:26'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	^ aDivisor dividesAnInteger: self.
+	
+! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'algo3 5/5/2022 18:18:56'!
 fibonacci
@@ -469,10 +485,28 @@ beAddedToAFraction: aFraction
 beAddedToAnInteger: anAugend
 	^ self class with: anAugend integerValue + self integerValue .! !
 
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'va 5/7/2022 18:14:13'!
+dividesAFraction: aDivisor
+	^ (aDivisor numerator / (aDivisor denominator * self )).! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'va 5/7/2022 18:00:26'!
+dividesAnInteger: aDividend
+
+	^Fraccion with: aDividend over: self.! !
+
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'HernanWilkinson 5/7/2016 21:00'!
 greatestCommonDivisorWith: anEntero 
 	
 	^self class with: (value gcd: anEntero integerValue)! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'va 5/7/2022 17:31:07'!
+multiplyAnInteger: aMultiplier
+	^self class with: value * aMultiplier integerValue.! !
+
+
+!Entero methodsFor: 'nil' stamp: 'va 5/7/2022 17:30:06'!
+beMultipliedByAFraction: aMultiplier
+	^ aMultiplier multiplyAnInteger: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -500,10 +534,10 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'private' stamp: 'algo3 5/5/2022 17:53:57'!
+!Fraccion methodsFor: 'private' stamp: 'va 5/7/2022 17:43:32'!
 beAddedToAFraction: aFraction
 	|newNumerator newDenominator|
-	newNumerator := (numerator * aFraction denominator) + (denominator * aFraction numerator). 
+	newNumerator := (numerator * aFraction denominator) + (denominator * aFraction numerator). "falla xq usa el *"
 	newDenominator := denominator * aFraction denominator. 
 	^newNumerator / newDenominator! !
 
@@ -511,19 +545,38 @@ beAddedToAFraction: aFraction
 beAddedToAnInteger: anAugend
 	^(anAugend * denominator +  numerator) /  denominator.! !
 
+!Fraccion methodsFor: 'private' stamp: 'va 5/7/2022 16:52:15'!
+beMultipliedByAFraction: aMultiplier
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
-* aMultiplier 
-	
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+	^ (numerator * aMultiplier numerator) / (denominator * aMultiplier denominator).
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'algo3 5/5/2022 18:01:37'!
-+ anAdder 
-	"| newNumerator newDenominator |
+!Fraccion methodsFor: 'private' stamp: 'va 5/7/2022 18:08:59'!
+dividesAFraction: aDividend
+
+	^((aDividend numerator * denominator) / (aDividend denominator * numerator )).! !
+
+!Fraccion methodsFor: 'private' stamp: 'va 5/7/2022 18:00:26'!
+dividesAnInteger: aDividend
+
+	^((aDividend * self denominator ) / self numerator).
 	
-	(anAdder isKindOf: Fraccion) ifTrue: [	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator). newDenominator := denominator * anAdder denominator. ^newNumerator / newDenominator ].
-	^ (anAdder * denominator + numerator) / denominator ."
+	! !
+
+!Fraccion methodsFor: 'private' stamp: 'va 5/7/2022 17:30:06'!
+multiplyAnInteger: aMultiplier
+
+	^ ((aMultiplier *  numerator) / denominator) .! !
+
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'va 5/7/2022 16:47:08'!
+* aMultiplier 
+
+	^aMultiplier beMultipliedByAFraction: self.
+	! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'va 5/7/2022 17:42:01'!
++ anAdder 
 	
 	^anAdder beAddedToAFraction: self.
 	
@@ -542,10 +595,10 @@ beAddedToAnInteger: anAugend
 	^newNumerator / newDenominator 
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'va 5/7/2022 18:03:00'!
 / aDivisor 
-	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+
+	^aDivisor dividesAFraction: self.! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -604,6 +657,7 @@ printOn: aStream
 		print: numerator;
 		nextPut: $/;
 		print: denominator ! !
+
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
