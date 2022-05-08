@@ -385,7 +385,6 @@ multiplyAFraction: aMultiplier
 multiplyAnInteger: aMultiplier
 	self subclassResponsibility .! !
 
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Numero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -441,22 +440,9 @@ Numero subclass: #Entero
 	
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 13:42:56'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'va 5/8/2022 14:42:27'!
 fibonacci
 
-
-	"| one two |
-	
-	one := Entero with: 1.
-	two := Entero with: 2."
-	
-	"sacar"
-	"self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
-		
-	^ (self - one) fibonacci + (self - two) fibonacci"
-	"Original"
-	
 	self subclassResponsibility.
 		! !
 
@@ -566,13 +552,15 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'JS 5/5/2022 03:55:37'!
+!Entero class methodsFor: 'instance creation' stamp: 'va 5/8/2022 14:19:47'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
+	aValue = 0 ifTrue: [^Cero new initializeWith: aValue].
+	aValue < 0 ifTrue: [^Negativos new initializeWith: aValue].
 	
-	^self new initializeWith: aValue! !
+	^Naturales new initializeWith: aValue! !
 
 
 !classDefinition: #Cero category: 'Numeros-Parte2-Ejercicio'!
@@ -595,9 +583,15 @@ Entero subclass: #Naturales
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Naturales methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 13:14:50'!
+!Naturales methodsFor: 'as yet unclassified' stamp: 'va 5/8/2022 14:38:54'!
 fibonacci
-! !
+	
+	| one two |
+	one := Entero with: 1.
+	two := Entero with: 2.
+	
+	self isOne ifTrue: [^ one].
+	^(self - one) fibonacci + (self - two) fibonacci.! !
 
 
 !classDefinition: #Negativos category: 'Numeros-Parte2-Ejercicio'!
@@ -607,8 +601,10 @@ Entero subclass: #Negativos
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Negativos methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 13:14:58'!
-fibonacci! !
+!Negativos methodsFor: 'as yet unclassified' stamp: 'va 5/8/2022 14:42:38'!
+fibonacci
+
+	self error: Entero negativeFibonacciErrorDescription! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
