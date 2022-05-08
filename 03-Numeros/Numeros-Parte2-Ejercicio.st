@@ -433,7 +433,7 @@ Numero subclass: #Entero
 	
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 13:00:55'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 17:39:15'!
 / aDivisor 
 	
 	^ aDivisor divideAnInteger: self.
@@ -494,7 +494,7 @@ isZero
 	^value = 0! !
 
 
-!Entero methodsFor: 'arithmetic operations - private' stamp: 'HernanWilkinson 5/7/2016 21:55'!
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'algo3 5/8/2022 18:15:04'!
 // aDivisor 
 	
 	^self class with: value // aDivisor integerValue! !
@@ -552,15 +552,16 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'va 5/8/2022 14:19:47'!
+!Entero class methodsFor: 'instance creation' stamp: 'algo3 5/8/2022 17:37:27'!
 with: aValue 
+	
+	|correspondentSubclass|
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
-	aValue = 0 ifTrue: [^Cero new initializeWith: aValue].
-	aValue < 0 ifTrue: [^Negativos new initializeWith: aValue].
 	
-	^Naturales new initializeWith: aValue! !
+	correspondentSubclass := Entero subclasses detect: [ :subclass | subclass canStore: aValue ].
+	^correspondentSubclass new initializeWith: aValue.! !
 
 
 !classDefinition: #Cero category: 'Numeros-Parte2-Ejercicio'!
@@ -575,36 +576,100 @@ fibonacci
 
 	^ Entero with: 1.! !
 
+
+!Cero methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:45:17'!
++ anAdder
+	^anAdder.! !
+
+!Cero methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:57:17'!
+canNotDivideByZeroErrorDescription
+	self error: self class canNotDivideByZeroErrorDescription.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Cero class' category: 'Numeros-Parte2-Ejercicio'!
+Cero class
+	instanceVariableNames: ''!
+
+!Cero class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:15:11'!
+canStore: aValue
+	^aValue = 0.
+	! !
+
+!Cero class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:29:35'!
+error! !
+
 
-!classDefinition: #Naturales category: 'Numeros-Parte2-Ejercicio'!
-Entero subclass: #Naturales
+!classDefinition: #MayorAUno category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #MayorAUno
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Naturales methodsFor: 'as yet unclassified' stamp: 'va 5/8/2022 14:38:54'!
+!MayorAUno methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:22:32'!
 fibonacci
 	
 	| one two |
 	one := Entero with: 1.
 	two := Entero with: 2.
 	
-	self isOne ifTrue: [^ one].
 	^(self - one) fibonacci + (self - two) fibonacci.! !
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'MayorAUno class' category: 'Numeros-Parte2-Ejercicio'!
+MayorAUno class
+	instanceVariableNames: ''!
+
+!MayorAUno class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:35:03'!
+canStore: aValue
+	^aValue > 1.! !
+
 
-!classDefinition: #Negativos category: 'Numeros-Parte2-Ejercicio'!
-Entero subclass: #Negativos
+!classDefinition: #Negativo category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Negativo
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Negativos methodsFor: 'as yet unclassified' stamp: 'va 5/8/2022 14:42:38'!
+!Negativo methodsFor: 'as yet unclassified' stamp: 'va 5/8/2022 14:42:38'!
 fibonacci
 
 	self error: Entero negativeFibonacciErrorDescription! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Negativo class' category: 'Numeros-Parte2-Ejercicio'!
+Negativo class
+	instanceVariableNames: ''!
+
+!Negativo class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:25:48'!
+canStore: aValue
+	^aValue < 0.! !
+
+
+!classDefinition: #Uno category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Uno
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Uno methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:23:25'!
+fibonacci
+	^self.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Uno class' category: 'Numeros-Parte2-Ejercicio'!
+Uno class
+	instanceVariableNames: ''!
+
+!Uno class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:26:05'!
+canStore: aValue
+	^aValue = 1.! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
@@ -770,9 +835,9 @@ printOn: aStream
 Fraccion class
 	instanceVariableNames: ''!
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'algo3 5/5/2022 18:19:10'!
+!Fraccion class methodsFor: 'intance creation' stamp: 'algo3 5/8/2022 18:12:48'!
 with: aDividend over: aDivisor
-
+	
 	| greatestCommonDivisor numerator denominator |
 	
 	
@@ -788,5 +853,4 @@ with: aDividend over: aDivisor
 	
 	denominator isOne ifTrue: [ ^numerator ].
 
-	^self new initializeWith: numerator over: denominator
-	! !
+	^self new initializeWith: numerator over: denominator! !
