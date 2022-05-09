@@ -507,6 +507,24 @@ beAddedToAFraction: aFraction
 beAddedToAnInteger: anAugend
 	^ self class with: anAugend integerValue + self integerValue .! !
 
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'algo3 5/8/2022 21:14:57'!
+beDividendWithDivisor: aDivisor
+	| greatestCommonDivisor numerator denominator|
+	
+	greatestCommonDivisor := self greatestCommonDivisorWith: aDivisor. 
+	numerator := self // greatestCommonDivisor.
+	denominator := aDivisor // greatestCommonDivisor.
+	
+	denominator isOne ifTrue: [ ^numerator ].
+
+	^Fraccion new initializeWith: numerator over: denominator
+	! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'algo3 5/8/2022 21:01:24'!
+beDivisorWithDividend: aDividend
+
+	self subclassResponsibility.! !
+
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'algo3 5/8/2022 13:04:35'!
 beSubstractedFromAFraction: aMinuend
 	| negativeOne |
@@ -533,14 +551,20 @@ greatestCommonDivisorWith: anEntero
 	
 	^self class with: (value gcd: anEntero integerValue)! !
 
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'algo3 5/8/2022 12:14:55'!
+multiplyAFraction: aMultiplier
+	^ aMultiplier multiplyAnInteger: self.! !
+
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'va 5/7/2022 17:31:07'!
 multiplyAnInteger: aMultiplier
 	^self class with: value * aMultiplier integerValue.! !
 
 
-!Entero methodsFor: 'nil' stamp: 'algo3 5/8/2022 12:14:55'!
-multiplyAFraction: aMultiplier
-	^ aMultiplier multiplyAnInteger: self.! !
+!Entero methodsFor: 'error' stamp: 'algo3 5/8/2022 21:48:13'!
+errorOneCanNotBeADenominator! !
+
+!Entero methodsFor: 'error' stamp: 'algo3 5/8/2022 21:48:02'!
+errorZeroCanNotBeAFraction! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -571,19 +595,40 @@ Entero subclass: #Cero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
+!Cero methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 17:45:17'!
++ anAdder
+	^anAdder.! !
+
 !Cero methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 13:23:16'!
 fibonacci
 
 	^ Entero with: 1.! !
 
 
-!Cero methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:45:17'!
-+ anAdder
-	^anAdder.! !
+!Cero methodsFor: 'error' stamp: 'algo3 5/8/2022 21:03:18'!
+beDividendWithDivisor: aDivisor
 
-!Cero methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:57:17'!
+	^self.! !
+
+!Cero methodsFor: 'error' stamp: 'algo3 5/8/2022 21:03:26'!
+beDivisorWithDividend: aDividend
+	^self error: self class canNotDivideByZeroErrorDescription! !
+
+!Cero methodsFor: 'error' stamp: 'algo3 5/8/2022 20:55:09'!
+canNotDivideByZero
+	self error: self class canNotDivideByZeroErrorDescription.! !
+
+!Cero methodsFor: 'error' stamp: 'algo3 5/8/2022 17:57:17'!
 canNotDivideByZeroErrorDescription
 	self error: self class canNotDivideByZeroErrorDescription.! !
+
+!Cero methodsFor: 'error' stamp: 'algo3 5/8/2022 20:55:18'!
+errorCanNotDivideByZero
+	self error: self class canNotDivideByZeroErrorDescription.! !
+
+!Cero methodsFor: 'error' stamp: 'algo3 5/8/2022 21:56:10'!
+errorZeroCanNotBeAFraction
+	Fraccion error: Fraccion errorZeroCanNotBeAFractionDescription.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -591,13 +636,10 @@ canNotDivideByZeroErrorDescription
 Cero class
 	instanceVariableNames: ''!
 
-!Cero class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:15:11'!
+!Cero class methodsFor: 'instance creation' stamp: 'algo3 5/8/2022 17:15:11'!
 canStore: aValue
 	^aValue = 0.
 	! !
-
-!Cero class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:29:35'!
-error! !
 
 
 !classDefinition: #MayorAUno category: 'Numeros-Parte2-Ejercicio'!
@@ -607,7 +649,12 @@ Entero subclass: #MayorAUno
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!MayorAUno methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:22:32'!
+!MayorAUno methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 21:02:57'!
+beDivisorWithDividend: aDividend
+
+	^aDividend beDividendWithDivisor: self.! !
+
+!MayorAUno methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 17:22:32'!
 fibonacci
 	
 	| one two |
@@ -622,7 +669,7 @@ fibonacci
 MayorAUno class
 	instanceVariableNames: ''!
 
-!MayorAUno class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:35:03'!
+!MayorAUno class methodsFor: 'instance creation' stamp: 'algo3 5/8/2022 17:35:03'!
 canStore: aValue
 	^aValue > 1.! !
 
@@ -634,7 +681,11 @@ Entero subclass: #Negativo
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Negativo methodsFor: 'as yet unclassified' stamp: 'va 5/8/2022 14:42:38'!
+!Negativo methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 21:04:28'!
+beDivisorWithDividend: aDividend
+	^aDividend negated beDividendWithDivisor: self negated.! !
+
+!Negativo methodsFor: 'arithmetic operations' stamp: 'va 5/8/2022 14:42:38'!
 fibonacci
 
 	self error: Entero negativeFibonacciErrorDescription! !
@@ -645,7 +696,7 @@ fibonacci
 Negativo class
 	instanceVariableNames: ''!
 
-!Negativo class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:25:48'!
+!Negativo class methodsFor: 'instance creation' stamp: 'algo3 5/8/2022 17:25:48'!
 canStore: aValue
 	^aValue < 0.! !
 
@@ -657,7 +708,17 @@ Entero subclass: #Uno
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Uno methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:23:25'!
+!Uno methodsFor: 'error' stamp: 'algo3 5/8/2022 21:56:03'!
+errorOneCanNotBeADenominator
+	Fraccion error: Fraccion errorOneCanNotBeADenominatorDescription.! !
+
+
+!Uno methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 21:10:03'!
+beDivisorWithDividend: aDividend
+
+	^self.! !
+
+!Uno methodsFor: 'arithmetic operations' stamp: 'algo3 5/8/2022 17:23:25'!
 fibonacci
 	^self.! !
 
@@ -667,7 +728,7 @@ fibonacci
 Uno class
 	instanceVariableNames: ''!
 
-!Uno class methodsFor: 'as yet unclassified' stamp: 'algo3 5/8/2022 17:26:05'!
+!Uno class methodsFor: 'instance creation' stamp: 'algo3 5/8/2022 17:26:05'!
 canStore: aValue
 	^aValue = 1.! !
 
@@ -794,12 +855,12 @@ numerator
 	^ numerator! !
 
 
-!Fraccion methodsFor: 'initialization' stamp: 'HernanWilkinson 5/7/2016 22:54'!
+!Fraccion methodsFor: 'initialization' stamp: 'algo3 5/8/2022 21:49:00'!
 initializeWith: aNumerator over: aDenominator
 
-	"Estas precondiciones estan por si se comenten errores en la implementacion - Hernan"
-	aNumerator isZero ifTrue: [ self error: 'una fraccion no puede ser cero' ].
-	aDenominator isOne ifTrue: [ self error: 'una fraccion no puede tener denominador 1 porque sino es un entero' ].
+
+	aNumerator errorZeroCanNotBeAFraction.
+	aDenominator errorOneCanNotBeADenominator.
 	
 	numerator := aNumerator.
 	denominator := aDenominator ! !
@@ -835,22 +896,18 @@ printOn: aStream
 Fraccion class
 	instanceVariableNames: ''!
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'algo3 5/8/2022 18:12:48'!
-with: aDividend over: aDivisor
-	
-	| greatestCommonDivisor numerator denominator |
-	
-	
-	"sacar"
-	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ].
-	aDividend isZero ifTrue: [ ^aDividend ].
-	
-	aDivisor isNegative ifTrue:[ ^aDividend negated / aDivisor negated].
-	
-	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
-	numerator := aDividend // greatestCommonDivisor.
-	denominator := aDivisor // greatestCommonDivisor.
-	
-	denominator isOne ifTrue: [ ^numerator ].
+!Fraccion class methodsFor: 'intance creation' stamp: 'algo3 5/8/2022 21:55:24'!
+errorOneCanNotBeADenominatorDescription
+	^'una fraccion no puede tener denominador 1 porque sino es un entero'! !
 
-	^self new initializeWith: numerator over: denominator! !
+!Fraccion class methodsFor: 'intance creation' stamp: 'algo3 5/8/2022 21:54:23'!
+errorOneCanNotBeANumeratorDescription
+	^'una fraccion no puede tener denominador 1 porque sino es un entero'! !
+
+!Fraccion class methodsFor: 'intance creation' stamp: 'algo3 5/8/2022 21:53:40'!
+errorZeroCanNotBeAFractionDescription
+	^'una fraccion no puede ser cero'! !
+
+!Fraccion class methodsFor: 'intance creation' stamp: 'algo3 5/8/2022 21:06:33'!
+with: aDividend over: aDivisor
+	^aDivisor beDivisorWithDividend: aDividend.! !
