@@ -144,6 +144,121 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:03:08'!
+test01canNotFindWithAnEmptyPrefix
+	| aStack  aSentenceFinder|
+	
+	aStack := OOStack new.
+	aSentenceFinder := SentenceFinderByPrefix new.
+	
+	[aSentenceFinder find: '' in: aStack] on: 
+		Error do: 
+			[:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:03:24'!
+test02canNotFindWithAPrefixThatIncludesSpaces
+	| aStack  aSentenceFinder|
+	
+	aStack := OOStack new.
+	aSentenceFinder := SentenceFinderByPrefix new.
+	
+	[aSentenceFinder find: 'win ' in: aStack] on: 
+		Error do: 
+			[:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'algo3 5/14/2022 16:33:23'!
+test03theSentenceFinderIsCaseSensitive
+	| aStack aSentenceFinder matches expectedMatches |
+	aStack := OOStack new.
+	aStack push: 'winter is coming'.
+	aStack push: 'winning is everything'.
+	aStack push: 'The winds of Winter'.
+	aStack push: 'Winter is here'.
+	
+	aSentenceFinder := SentenceFinderByPrefix new.
+	matches := aSentenceFinder find: 'Wint' in: aStack.
+	expectedMatches := OrderedCollection with: 'Winter is here'.
+	self assert:( matches includesAllOf: expectedMatches )	.
+	
+	
+	
+! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 16:46:37'!
+test04theListOfMatchesIsEmptyIfThereAreNoMatchesWithThePrefix
+	| aStack aSentenceFinder |
+	aStack := OOStack new.
+	aStack push: 'algoritmos 3'.
+	aStack push: 'fiuba'.
+	
+	aSentenceFinder := SentenceFinderByPrefix new.
+
+	self assert:((aSentenceFinder find: 'de' in: aStack) isEmpty)	.
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 16:53:26'!
+test05afterFindingMatchesTheOriginalStackRemainsUnchanged
+	| aStack aSentenceFinder |
+	aStack := OOStack new.
+	aStack push: 'winter'.
+	aStack push: 'summer'.
+	
+	aSentenceFinder := SentenceFinderByPrefix new.
+	aSentenceFinder find: 'wint' in: aStack.
+	
+	self assert:(aStack pop = 'summer' and: aStack pop = 'winter')	.
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 16:59:15'!
+test06givenAStackWithRepeatedElementsTheListOfMatchesHaveThemAll
+	| aStack aSentenceFinder matches expectedMatches |
+	aStack := OOStack new.
+	aStack push: 'winter is coming'.
+	aStack push: 'winter is coming'.
+	aStack push: 'winning is everything'.
+	aStack push: 'winter is coming'.
+	aStack push: 'The winds of Winter'.
+	aStack push: 'Winter is here'.
+	
+	aSentenceFinder := SentenceFinderByPrefix new.
+	matches := aSentenceFinder find: 'wint' in: aStack.
+	expectedMatches := OrderedCollection new.
+	3 timesRepeat: [expectedMatches add: 'winter is coming'].
+	
+	self assert: (matches includesAllOf: expectedMatches)	.
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:01:25'!
+test07givenAnEmptyStackTheListOfMatchesIsEmpty
+	| aStack aSentenceFinder |
+	aStack := OOStack new.
+	aSentenceFinder := SentenceFinderByPrefix new.
+
+	self assert:( (aSentenceFinder find: 'hola' in: aStack) isEmpty)	.
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:21:35'!
+test08afterPopingAFoundElementTheListOfMatchesIsEmptyWhenFindingItAgain
+	| aStack aSentenceFinder firstMatches secondMatches |
+	aStack := OOStack new.
+	aStack push: 'winter is coming'.
+	aStack push: 'winning is everything'.
+	aStack push: 'The winds of Winter'.
+	aStack push: 'Winter is here'.
+	
+	aSentenceFinder := SentenceFinderByPrefix new.
+	firstMatches := aSentenceFinder find: 'Wint' in: aStack.
+	aStack pop.
+	secondMatches := aSentenceFinder find: 'Wint' in: aStack.
+	self assert:( firstMatches first =  'Winter is here' and: secondMatches isEmpty)	.
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SentenceFinderByPrefixTest class' category: 'Stack-Exercise'!
+SentenceFinderByPrefixTest class
+	instanceVariableNames: 'temporary'!
+
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
@@ -166,12 +281,12 @@ elements
 isEmpty
 	^ elements size = 0.! !
 
-!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:30:23'!
+!OOStack methodsFor: 'stack operations' stamp: 'va 5/14/2022 17:08:08'!
 pop
 	|pushedElement|
 	
 	pushedElement := status popFrom: self.
-	status := (StackStatus subclasses detect: [:aStatus| aStatus canHold: self]) new.
+	status := (StackStatus subclasses detect: [:aStatus| aStatus canBeAStatusOf: self]) new.
 	
 	^pushedElement.! !
 
@@ -226,6 +341,45 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'algo3 5/14/2022 15:52:28'!
+isAValidPrefix: aPrefix
+	((aPrefix includesSubString: ' ')or: aPrefix = '') ifTrue: [ ^self error: self class invalidPrefixError].
+	^true.! !
+
+
+!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'algo3 5/14/2022 16:05:05'!
+find: aPrefix in: aStack
+	(self isAValidPrefix: aPrefix) ifTrue: [
+		
+		| auxiliarStack matchesCollection stackSize|
+		
+		auxiliarStack := OOStack new.
+		matchesCollection := OrderedCollection new.
+		stackSize := aStack size.
+		
+		stackSize timesRepeat: [
+			
+				auxiliarStack push: aStack pop.
+				(auxiliarStack top beginsWith: aPrefix) ifTrue: [ matchesCollection add: auxiliarStack top].
+			].
+		
+		stackSize timesRepeat: [aStack push: auxiliarStack  pop.].
+			
+			^matchesCollection.
+		]
+	
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
+SentenceFinderByPrefix class
+	instanceVariableNames: ''!
+
+!SentenceFinderByPrefix class methodsFor: 'error' stamp: 'algo3 5/14/2022 15:30:36'!
+invalidPrefixError
+	^'El prefijo no puede contener espacios vacios ni ser vacio'.! !
+
 
 !classDefinition: #StackStatus category: 'Stack-Exercise'!
 Object subclass: #StackStatus
@@ -264,8 +418,8 @@ topOf: aStack
 Empty class
 	instanceVariableNames: ''!
 
-!Empty class methodsFor: 'support' stamp: 'vALENKPA 5/12/2022 17:26:01'!
-canHold: aStack
+!Empty class methodsFor: 'support' stamp: 'va 5/14/2022 17:08:06'!
+canBeAStatusOf: aStack
 	^aStack isEmpty.! !
 
 
@@ -290,6 +444,6 @@ topOf: aStack
 NotEmpty class
 	instanceVariableNames: ''!
 
-!NotEmpty class methodsFor: 'support' stamp: 'vALENKPA 5/12/2022 17:44:28'!
-canHold: aStack
+!NotEmpty class methodsFor: 'support' stamp: 'va 5/14/2022 17:08:08'!
+canBeAStatusOf: aStack
 	^aStack isEmpty not.! !
