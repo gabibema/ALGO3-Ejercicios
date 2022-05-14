@@ -144,8 +144,13 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+<<<<<<< HEAD
 !SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:03:08'!
 test01canNotFindWithAnEmptyPrefix
+=======
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 15:40:02'!
+test01canNotFindAnEmptyPrefix
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 	| aStack  aSentenceFinder|
 	
 	aStack := OOStack new.
@@ -155,8 +160,13 @@ test01canNotFindWithAnEmptyPrefix
 		Error do: 
 			[:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
 
+<<<<<<< HEAD
 !SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:03:24'!
 test02canNotFindWithAPrefixThatIncludesSpaces
+=======
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 16:07:34'!
+test02canNotFindAPrefixThatIncludesSpaces
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 	| aStack  aSentenceFinder|
 	
 	aStack := OOStack new.
@@ -166,7 +176,11 @@ test02canNotFindWithAPrefixThatIncludesSpaces
 		Error do: 
 			[:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
 
+<<<<<<< HEAD
 !SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'algo3 5/14/2022 16:33:23'!
+=======
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 16:33:23'!
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 test03theSentenceFinderIsCaseSensitive
 	| aStack aSentenceFinder matches expectedMatches |
 	aStack := OOStack new.
@@ -184,6 +198,7 @@ test03theSentenceFinderIsCaseSensitive
 	
 ! !
 
+<<<<<<< HEAD
 !SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 16:46:37'!
 test04theListOfMatchesIsEmptyIfThereAreNoMatchesWithThePrefix
 	| aStack aSentenceFinder |
@@ -253,6 +268,8 @@ test08afterPopingAFoundElementTheListOfMatchesIsEmptyWhenFindingItAgain
 	self assert:( firstMatches first =  'Winter is here' and: secondMatches isEmpty)	.
 	! !
 
+=======
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SentenceFinderByPrefixTest class' category: 'Stack-Exercise'!
@@ -281,12 +298,20 @@ elements
 isEmpty
 	^ elements size = 0.! !
 
+<<<<<<< HEAD
 !OOStack methodsFor: 'stack operations' stamp: 'va 5/14/2022 17:08:08'!
+=======
+!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:30:23'!
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 pop
 	|pushedElement|
 	
 	pushedElement := status popFrom: self.
+<<<<<<< HEAD
 	status := (StackStatus subclasses detect: [:aStatus| aStatus canBeAStatusOf: self]) new.
+=======
+	status := (StackStatus subclasses detect: [:aStatus| aStatus canHold: self]) new.
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 	
 	^pushedElement.! !
 
@@ -341,6 +366,7 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+<<<<<<< HEAD
 !SentenceFinderByPrefix methodsFor: 'private' stamp: 'algo3 5/14/2022 15:52:28'!
 isAValidPrefix: aPrefix
 	((aPrefix includesSubString: ' ')or: aPrefix = '') ifTrue: [ ^self error: self class invalidPrefixError].
@@ -348,6 +374,9 @@ isAValidPrefix: aPrefix
 
 
 !SentenceFinderByPrefix methodsFor: 'operations' stamp: 'algo3 5/14/2022 16:05:05'!
+=======
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 16:05:05'!
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 find: aPrefix in: aStack
 	(self isAValidPrefix: aPrefix) ifTrue: [
 		
@@ -370,13 +399,25 @@ find: aPrefix in: aStack
 	
 	! !
 
+<<<<<<< HEAD
+=======
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 15:52:28'!
+isAValidPrefix: aPrefix
+	((aPrefix includesSubString: ' ')or: aPrefix = '') ifTrue: [ ^self error: self class invalidPrefixError].
+	^true.! !
+
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
 
+<<<<<<< HEAD
 !SentenceFinderByPrefix class methodsFor: 'error' stamp: 'algo3 5/14/2022 15:30:36'!
+=======
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 15:30:36'!
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 invalidPrefixError
 	^'El prefijo no puede contener espacios vacios ni ser vacio'.! !
 
@@ -418,8 +459,13 @@ topOf: aStack
 Empty class
 	instanceVariableNames: ''!
 
+<<<<<<< HEAD
 !Empty class methodsFor: 'support' stamp: 'va 5/14/2022 17:08:06'!
 canBeAStatusOf: aStack
+=======
+!Empty class methodsFor: 'support' stamp: 'vALENKPA 5/12/2022 17:26:01'!
+canHold: aStack
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 	^aStack isEmpty.! !
 
 
@@ -444,6 +490,11 @@ topOf: aStack
 NotEmpty class
 	instanceVariableNames: ''!
 
+<<<<<<< HEAD
 !NotEmpty class methodsFor: 'support' stamp: 'va 5/14/2022 17:08:08'!
 canBeAStatusOf: aStack
+=======
+!NotEmpty class methodsFor: 'support' stamp: 'vALENKPA 5/12/2022 17:44:28'!
+canHold: aStack
+>>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 	^aStack isEmpty not.! !
