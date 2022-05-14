@@ -175,6 +175,10 @@ pop
 	
 	^pushedElement.! !
 
+!OOStack methodsFor: 'stack operations' stamp: 'va 5/14/2022 14:56:00'!
+popWhenNotEmpty
+		^ elements removeFirst.! !
+
 !OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:40:13'!
 push: anElement
 	elements addFirst: anElement. 
@@ -190,6 +194,10 @@ top
 	^status topOf: self.
 ! !
 
+!OOStack methodsFor: 'stack operations' stamp: 'va 5/14/2022 14:54:55'!
+topWhenNotEmpty
+	^elements first.! !
+
 
 !OOStack methodsFor: 'private' stamp: 'va 5/14/2022 15:00:47'!
 canNotPopWhenEmpty
@@ -198,14 +206,6 @@ canNotPopWhenEmpty
 !OOStack methodsFor: 'private' stamp: 'va 5/14/2022 15:00:57'!
 canNotTopWhenEmpty
 	^ self error: self class stackEmptyErrorDescription.! !
-
-!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 14:56:00'!
-popWhenNotEmpty
-		^ elements removeFirst.! !
-
-!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 14:54:55'!
-topWhenNotEmpty
-	^elements first.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
