@@ -147,36 +147,48 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'elements'
+	instanceVariableNames: 'elements status'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'initialization' stamp: 'va 5/10/2022 20:37:26'!
+!OOStack methodsFor: 'initialization' stamp: 'vALENKPA 5/12/2022 16:51:48'!
 initialize
-	elements := OrderedCollection new.! !
+	elements := OrderedCollection new.
+	status := Empty new.! !
 
+
+!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:11:40'!
+elements
+	^elements.! !
 
 !OOStack methodsFor: 'stack operations' stamp: 'va 5/10/2022 20:37:26'!
 isEmpty
 	^ elements size = 0.! !
 
-!OOStack methodsFor: 'stack operations' stamp: 'va 5/10/2022 21:36:06'!
+!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:30:23'!
 pop
-	self size > 0 ifTrue: [^elements removeFirst] ifFalse: [^self error: self class stackEmptyErrorDescription].! !
+	|pushedElement|
+	
+	pushedElement := status popFrom: self.
+	status := (StackStatus subclasses detect: [:aStatus| aStatus canHold: self]) new.
+	
+	^pushedElement.! !
 
-!OOStack methodsFor: 'stack operations' stamp: 'va 5/10/2022 20:38:22'!
+!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:40:13'!
 push: anElement
 	elements addFirst: anElement. 
+	status := NotEmpty new. "quizas hacer q no se cree uno nuevo siempre si ya tiene elementos"
 	! !
 
 !OOStack methodsFor: 'stack operations' stamp: 'va 5/10/2022 21:29:39'!
 size
 	^elements size.! !
 
-!OOStack methodsFor: 'stack operations' stamp: 'va 5/10/2022 21:38:52'!
+!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:08:00'!
 top
-	self size > 0 ifTrue: [^elements first] ifFalse: [^self error: self class stackEmptyErrorDescription].! !
+	^status topOf: self.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -196,3 +208,72 @@ Object subclass: #SentenceFinderByPrefix
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+
+!classDefinition: #StackStatus category: 'Stack-Exercise'!
+Object subclass: #StackStatus
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!StackStatus methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 16:56:50'!
+popFrom: aStack
+	self subclassResponsibility.! !
+
+!StackStatus methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:03:54'!
+topOf: aStack
+	self subclassResponsibility.! !
+
+
+!classDefinition: #Empty category: 'Stack-Exercise'!
+StackStatus subclass: #Empty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!Empty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 16:58:55'!
+popFrom: aStack
+	^ aStack error: aStack class stackEmptyErrorDescription.! !
+
+!Empty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:04:32'!
+topOf: aStack
+	^ aStack error: aStack class stackEmptyErrorDescription.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Empty class' category: 'Stack-Exercise'!
+Empty class
+	instanceVariableNames: ''!
+
+!Empty class methodsFor: 'support' stamp: 'vALENKPA 5/12/2022 17:26:01'!
+canHold: aStack
+	^aStack isEmpty.! !
+
+
+!classDefinition: #NotEmpty category: 'Stack-Exercise'!
+StackStatus subclass: #NotEmpty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!NotEmpty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:06:05'!
+popFrom: aStack
+	
+	^aStack elements removeFirst.! !
+
+!NotEmpty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:05:38'!
+topOf: aStack
+	^aStack elements first.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'NotEmpty class' category: 'Stack-Exercise'!
+NotEmpty class
+	instanceVariableNames: ''!
+
+!NotEmpty class methodsFor: 'support' stamp: 'vALENKPA 5/12/2022 17:44:28'!
+canHold: aStack
+	^aStack isEmpty not.! !
