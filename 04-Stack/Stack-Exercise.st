@@ -190,6 +190,23 @@ top
 	^status topOf: self.
 ! !
 
+
+!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 15:00:47'!
+canNotPopWhenEmpty
+	^ self error: self class stackEmptyErrorDescription.! !
+
+!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 15:00:57'!
+canNotTopWhenEmpty
+	^ self error: self class stackEmptyErrorDescription.! !
+
+!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 14:56:00'!
+popWhenNotEmpty
+		^ elements removeFirst.! !
+
+!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 14:54:55'!
+topWhenNotEmpty
+	^elements first.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'OOStack class' category: 'Stack-Exercise'!
@@ -233,9 +250,9 @@ StackStatus subclass: #Empty
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!Empty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 16:58:55'!
+!Empty methodsFor: 'stack operations' stamp: 'va 5/14/2022 15:00:28'!
 popFrom: aStack
-	^ aStack error: aStack class stackEmptyErrorDescription.! !
+	^ aStack canNotPopWhenEmpty.! !
 
 !Empty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:04:32'!
 topOf: aStack
@@ -259,14 +276,13 @@ StackStatus subclass: #NotEmpty
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!NotEmpty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:06:05'!
+!NotEmpty methodsFor: 'stack operations' stamp: 'va 5/14/2022 15:02:07'!
 popFrom: aStack
-	
-	^aStack elements removeFirst.! !
+	^aStack popWhenNotEmpty.! !
 
-!NotEmpty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:05:38'!
+!NotEmpty methodsFor: 'stack operations' stamp: 'va 5/14/2022 14:54:30'!
 topOf: aStack
-	^aStack elements first.! !
+	^aStack topWhenNotEmpty.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
