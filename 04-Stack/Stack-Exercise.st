@@ -136,8 +136,17 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'va 5/14/2022 23:19:52'!
-test11ALimitedStackCanBeCreatedSuccessfully
+!OOStackTest methodsFor: 'test' stamp: 'va 5/15/2022 18:39:56'!
+test11CanNotCreateALimitedStackWithANoIntegerSize
+	self createALimitedStackAndCatchExceptionWithInvalidSize: 'a'.
+	! !
+
+!OOStackTest methodsFor: 'test' stamp: 'va 5/15/2022 18:40:16'!
+test12CanNotCreateALimitedStackWithANegativeSize
+	self createALimitedStackAndCatchExceptionWithInvalidSize: -4.! !
+
+!OOStackTest methodsFor: 'test' stamp: 'algo3 5/15/2022 17:15:07'!
+test13ALimitedStackCanBeCreatedSuccessfully
 	|aStack|
 	aStack := OOStack newWithLimit: 3.
 	self deny: aStack = nil.
@@ -145,8 +154,8 @@ test11ALimitedStackCanBeCreatedSuccessfully
 	
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'va 5/14/2022 23:55:52'!
-test12CanNotPushMoreElementsWhenTheStackIsFull
+!OOStackTest methodsFor: 'test' stamp: 'algo3 5/15/2022 17:14:58'!
+test14CanNotPushMoreElementsWhenTheStackIsFull
 	|aStack|
 	aStack := OOStack newWithLimit: 2.
 	aStack push: 1.
@@ -157,121 +166,121 @@ test12CanNotPushMoreElementsWhenTheStackIsFull
 		do: [:anError | self assert: anError messageText = OOStack stackPushInAFullStackErrorDescription].
 ! !
 
+
+!OOStackTest methodsFor: 'private' stamp: 'va 5/15/2022 18:39:33'!
+createALimitedStackAndCatchExceptionWithInvalidSize: size
+	
+	[OOStack newWithLimit: size. self fail] 
+		on: Error
+		do: [:anError| self assert: anError messageText equals: OOStack stackSizeLimitErrorDescription.]
+	
+	
+	! !
+
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'stack sentenceFinder expectedMatches'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:08:09'!
-test01givenAnEmptyStackTheListOfMatchesIsEmpty
-	| aStack aSentenceFinder |
-	aStack := OOStack new.
-	aSentenceFinder := SentenceFinderByPrefix new.
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'va 5/15/2022 18:47:59'!
+setUp 
 
-	self assert:( (aSentenceFinder find: 'hola' in: aStack) isEmpty)	.
+	stack := OOStack new.
+	sentenceFinder := SentenceFinderByPrefix new.
+	expectedMatches := OrderedCollection new.! !
+
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/15/2022 19:02:38'!
+test01givenAnEmptyStackTheListOfMatchesIsEmpty
+
+	self assert: ((sentenceFinder find: 'hola' in: stack) isEmpty)	.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:56:16'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/15/2022 18:25:47'!
 test02canNotFindWithAPrefixThatIncludesSpaces
-	| aStack  aSentenceFinder|
 	
-	aStack := OOStack new.
-	aSentenceFinder := SentenceFinderByPrefix new.
-	
-	[aSentenceFinder find: 'win ' in: aStack. self fail] 
+	[sentenceFinder find: 'win ' in: stack. self fail] 
 		on: Error 
 		do: [:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:56:22'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/15/2022 18:26:02'!
 test03canNotFindWithAnEmptyPrefix
-	| aStack  aSentenceFinder|
 	
-	aStack := OOStack new.
-	aSentenceFinder := SentenceFinderByPrefix new.
-	
-	[aSentenceFinder find: '' in: aStack. self fail] 
+	[sentenceFinder find: '' in: stack. self fail] 
 		on: Error
 		do: [:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:07:43'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/15/2022 18:47:59'!
 test04theSentenceFinderIsCaseSensitive
-	| aStack aSentenceFinder matches expectedMatches |
-	aStack := OOStack new.
-	aStack push: 'winter is coming'.
-	aStack push: 'winning is everything'.
-	aStack push: 'The winds of Winter'.
-	aStack push: 'Winter is here'.
+	| matches |
+
+	stack push: 'winter is coming'.
+	stack push: 'winning is everything'.
+	stack push: 'The winds of Winter'.
+	stack push: 'Winter is here'.
 	
-	aSentenceFinder := SentenceFinderByPrefix new.
-	matches := aSentenceFinder find: 'Wint' in: aStack.
-	expectedMatches := OrderedCollection with: 'Winter is here'.
+	matches := sentenceFinder find: 'Wint' in: stack.
+	expectedMatches add: 'Winter is here'.
 	self assert:( matches includesAllOf: expectedMatches )	.
 	
 	
 	
 ! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 16:53:26'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/15/2022 18:27:20'!
 test05afterFindingMatchesTheOriginalStackRemainsUnchanged
-	| aStack aSentenceFinder |
-	aStack := OOStack new.
-	aStack push: 'winter'.
-	aStack push: 'summer'.
+
+	stack push: 'winter'.
+	stack push: 'summer'.
 	
-	aSentenceFinder := SentenceFinderByPrefix new.
-	aSentenceFinder find: 'wint' in: aStack.
+	sentenceFinder find: 'wint' in: stack.
 	
-	self assert:(aStack pop = 'summer' and: aStack pop = 'winter')	.
+	self assert:(stack pop = 'summer' and: stack pop = 'winter')	.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 16:59:15'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/15/2022 18:47:59'!
 test06givenAStackWithRepeatedElementsTheListOfMatchesHaveThemAll
-	| aStack aSentenceFinder matches expectedMatches |
-	aStack := OOStack new.
-	aStack push: 'winter is coming'.
-	aStack push: 'winter is coming'.
-	aStack push: 'winning is everything'.
-	aStack push: 'winter is coming'.
-	aStack push: 'The winds of Winter'.
-	aStack push: 'Winter is here'.
+	|  matches |
+
+	stack push: 'winter is coming'.
+	stack push: 'winter is coming'.
+	stack push: 'winning is everything'.
+	stack push: 'winter is coming'.
+	stack push: 'The winds of Winter'.
+	stack push: 'Winter is here'.
 	
-	aSentenceFinder := SentenceFinderByPrefix new.
-	matches := aSentenceFinder find: 'wint' in: aStack.
-	expectedMatches := OrderedCollection new.
+	matches := sentenceFinder find: 'wint' in: stack.
+	
 	3 timesRepeat: [expectedMatches add: 'winter is coming'].
 	
 	self assert: (matches includesAllOf: expectedMatches)	.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:10:30'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/15/2022 19:02:18'!
 test07theListOfMatchesIsEmptyIfThereAreNoMatchesWithThePrefix
-	| aStack aSentenceFinder |
-	aStack := OOStack new.
-	aStack push: 'algoritmos 3'.
-	aStack push: 'fiuba'.
-	
-	aSentenceFinder := SentenceFinderByPrefix new.
 
-	self assert:((aSentenceFinder find: 'de' in: aStack) isEmpty)	.
+	stack push: 'algoritmos 3'.
+	stack push: 'fiuba'.
+
+	self assert: ((sentenceFinder find: 'de' in: stack) isEmpty)	.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:21:35'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/15/2022 19:01:50'!
 test08afterPopingAFoundElementTheListOfMatchesIsEmptyWhenFindingItAgain
-	| aStack aSentenceFinder firstMatches secondMatches |
-	aStack := OOStack new.
-	aStack push: 'winter is coming'.
-	aStack push: 'winning is everything'.
-	aStack push: 'The winds of Winter'.
-	aStack push: 'Winter is here'.
+	|  firstMatches secondMatches |
+
+	stack push: 'winter is coming'.
+	stack push: 'winning is everything'.
+	stack push: 'The winds of Winter'.
+	stack push: 'Winter is here'.
 	
-	aSentenceFinder := SentenceFinderByPrefix new.
-	firstMatches := aSentenceFinder find: 'Wint' in: aStack.
-	aStack pop.
-	secondMatches := aSentenceFinder find: 'Wint' in: aStack.
-	self assert:( firstMatches first =  'Winter is here' and: secondMatches isEmpty)	.
+	firstMatches := sentenceFinder find: 'Wint' in: stack.
+	stack pop.
+	secondMatches := sentenceFinder find: 'Wint' in: stack.
+	self assert: (firstMatches first =  'Winter is here' and: secondMatches isEmpty)	.
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -287,9 +296,6 @@ Object subclass: #OOStack
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
-!OOStack commentStamp: '<historical>' prior: 0!
-ver status!
-
 
 !OOStack methodsFor: 'initialization' stamp: 'algo3 5/14/2022 22:43:39'!
 initialize
@@ -297,19 +303,13 @@ initialize
 	maxSize := nil.! !
 
 
-!OOStack methodsFor: 'stack operations' stamp: 'va 5/10/2022 20:37:26'!
+!OOStack methodsFor: 'stack operations' stamp: 'va 5/15/2022 19:05:10'!
 isEmpty
-	^ elements size = 0.! !
+	^elements size = 0.! !
 
-!OOStack methodsFor: 'stack operations' stamp: 'algo3 5/14/2022 22:44:46'!
+!OOStack methodsFor: 'stack operations' stamp: 'va 5/15/2022 19:03:46'!
 pop
-	"|pushedElement|
-	
-	pushedElement := status popFrom: self.
-	status := (StackState subclasses detect: [:aStatus| aStatus canBeAStatusOf: self]) new.
-	
-	^pushedElement."
-	
+
 	^((StackState actualStateOf: self) new) popFrom: self.! !
 
 !OOStack methodsFor: 'stack operations' stamp: 'algo3 5/14/2022 22:39:32'!
@@ -337,10 +337,6 @@ canNotTopWhenEmpty
 	^ self error: self class stackEmptyErrorDescription.! !
 
 
-!OOStack methodsFor: 'accesing' stamp: 'vALENKPA 5/12/2022 17:11:40'!
-elements
-	^elements.! !
-
 !OOStack methodsFor: 'accesing' stamp: 'algo3 5/14/2022 22:15:09'!
 maxSize
 	^maxSize.! !
@@ -350,16 +346,22 @@ size
 	^elements size.! !
 
 
-!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 14:56:00'!
+!OOStack methodsFor: 'private' stamp: 'va 5/15/2022 18:11:32'!
+checkStackLimit: aLimit
+	(aLimit isInteger not) ifTrue: [^self error: self class stackSizeLimitErrorDescription].
+	(aLimit < 0) ifTrue: [^self error: self class stackSizeLimitErrorDescription].! !
+
+!OOStack methodsFor: 'private' stamp: 'va 5/15/2022 19:04:56'!
 popWhenNotEmpty
-		^ elements removeFirst.! !
+	^elements removeFirst.! !
 
 !OOStack methodsFor: 'private' stamp: 'algo3 5/14/2022 22:33:17'!
 pushWhenNotFull: anElement
 	^elements addFirst: anElement.! !
 
-!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 23:17:00'!
+!OOStack methodsFor: 'private' stamp: 'algo3 5/15/2022 16:58:04'!
 setLimit: sizeLimit
+	self checkStackLimit: sizeLimit.
 	maxSize := sizeLimit.! !
 
 !OOStack methodsFor: 'private' stamp: 'va 5/14/2022 14:54:55'!
@@ -372,11 +374,12 @@ topWhenNotEmpty
 OOStack class
 	instanceVariableNames: ''!
 
-!OOStack class methodsFor: 'error descriptions' stamp: 'va 5/14/2022 23:44:19'!
+!OOStack class methodsFor: 'limited stack' stamp: 'va 5/14/2022 23:44:19'!
 newWithLimit: maxSize
 	^((self new initialize) setLimit: maxSize).
 	
 	! !
+
 
 !OOStack class methodsFor: 'error descriptions' stamp: 'HernanWilkinson 5/7/2012 11:51'!
 stackEmptyErrorDescription
@@ -386,6 +389,10 @@ stackEmptyErrorDescription
 !OOStack class methodsFor: 'error descriptions' stamp: 'algo3 5/14/2022 22:22:57'!
 stackPushInAFullStackErrorDescription
 	^'Error no se puede pushear en un stack limitado lleno'! !
+
+!OOStack class methodsFor: 'error descriptions' stamp: 'algo3 5/15/2022 16:58:26'!
+stackSizeLimitErrorDescription
+	^'Error el límite para el stack debe ser un número positivo'.! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
@@ -401,26 +408,41 @@ checkIfPrefixIsValid: aPrefix
 	((aPrefix = '') or: (aPrefix includesSubString: ' ')) ifTrue: [^self error: self class invalidPrefixError].
 ! !
 
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'algo3 5/15/2022 17:21:09'!
+copyElementsFrom: aStack into: anotherStack
+	aStack size timesRepeat: [anotherStack push: aStack pop.].
+! !
 
-!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'va 5/14/2022 23:28:36'!
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'algo3 5/15/2022 17:26:41'!
+copyValuesFrom: aStack to: anotherStack andSelect: condition
+	| elements |
+	elements:= OrderedCollection new.
+	
+	aStack size timesRepeat: [
+		anotherStack push: aStack pop.
+		(condition value: anotherStack top) ifTrue: [ elements add: anotherStack top.].
+	].
+	
+	^elements.
+
+	! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'algo3 5/15/2022 17:34:24'!
+findAllWordsThatBeginsWith: aPrefix in: aStack
+	| auxiliarStack |.
+	auxiliarStack := OOStack new.
+
+	self copyElementsFrom: aStack into: auxiliarStack.
+	^self copyValuesFrom: auxiliarStack to: aStack  andSelect: [:element | element beginsWith: aPrefix].
+	! !
+
+
+!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'algo3 5/15/2022 17:34:48'!
 find: aPrefix in: aStack
-	| auxiliarStack matchesCollection stackSize|.
 	
 	self checkIfPrefixIsValid: aPrefix.
-		
-	auxiliarStack := OOStack new.
-	matchesCollection := OrderedCollection new.
-	stackSize := aStack size.
-
-	stackSize timesRepeat: [
-		
-			auxiliarStack push: aStack pop.
-			(auxiliarStack top beginsWith: aPrefix) ifTrue: [ matchesCollection add: auxiliarStack top]. 
-		].
+	^self findAllWordsThatBeginsWith: aPrefix in: aStack 
 	
-	stackSize timesRepeat: [aStack push: auxiliarStack  pop.].
-	
-	^matchesCollection.
 	
 	
 	! !
@@ -457,7 +479,7 @@ topOf: aStack
 StackState class
 	instanceVariableNames: ''!
 
-!StackState class methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 22:50:41'!
+!StackState class methodsFor: 'state detector' stamp: 'algo3 5/14/2022 22:50:41'!
 actualStateOf: aStack
 	^(StackState subclasses detect: [:aStatus| aStatus canBeAStatusOf: aStack]).! !
 
