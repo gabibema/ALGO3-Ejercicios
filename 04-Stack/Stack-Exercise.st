@@ -136,6 +136,27 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 		
 ! !
 
+!OOStackTest methodsFor: 'test' stamp: 'va 5/14/2022 23:19:52'!
+test11ALimitedStackCanBeCreatedSuccessfully
+	|aStack|
+	aStack := OOStack newWithLimit: 3.
+	self deny: aStack = nil.
+	
+	
+	! !
+
+!OOStackTest methodsFor: 'test' stamp: 'va 5/14/2022 23:55:52'!
+test12CanNotPushMoreElementsWhenTheStackIsFull
+	|aStack|
+	aStack := OOStack newWithLimit: 2.
+	aStack push: 1.
+	aStack push: 2.
+	
+	[aStack push: 3. self fail] 
+		on: Error
+		do: [:anError | self assert: anError messageText = OOStack stackPushInAFullStackErrorDescription].
+! !
+
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
@@ -144,44 +165,39 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-<<<<<<< HEAD
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:03:08'!
-test01canNotFindWithAnEmptyPrefix
-=======
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 15:40:02'!
-test01canNotFindAnEmptyPrefix
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
-	| aStack  aSentenceFinder|
-	
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:08:09'!
+test01givenAnEmptyStackTheListOfMatchesIsEmpty
+	| aStack aSentenceFinder |
 	aStack := OOStack new.
 	aSentenceFinder := SentenceFinderByPrefix new.
-	
-	[aSentenceFinder find: '' in: aStack] on: 
-		Error do: 
-			[:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
 
-<<<<<<< HEAD
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:03:24'!
+	self assert:( (aSentenceFinder find: 'hola' in: aStack) isEmpty)	.
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:56:16'!
 test02canNotFindWithAPrefixThatIncludesSpaces
-=======
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 16:07:34'!
-test02canNotFindAPrefixThatIncludesSpaces
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 	| aStack  aSentenceFinder|
 	
 	aStack := OOStack new.
 	aSentenceFinder := SentenceFinderByPrefix new.
 	
-	[aSentenceFinder find: 'win ' in: aStack] on: 
-		Error do: 
-			[:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
+	[aSentenceFinder find: 'win ' in: aStack. self fail] 
+		on: Error 
+		do: [:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
 
-<<<<<<< HEAD
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'algo3 5/14/2022 16:33:23'!
-=======
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 16:33:23'!
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
-test03theSentenceFinderIsCaseSensitive
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:56:22'!
+test03canNotFindWithAnEmptyPrefix
+	| aStack  aSentenceFinder|
+	
+	aStack := OOStack new.
+	aSentenceFinder := SentenceFinderByPrefix new.
+	
+	[aSentenceFinder find: '' in: aStack. self fail] 
+		on: Error
+		do: [:anError| self assert: anError messageText = SentenceFinderByPrefix invalidPrefixError].! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:07:43'!
+test04theSentenceFinderIsCaseSensitive
 	| aStack aSentenceFinder matches expectedMatches |
 	aStack := OOStack new.
 	aStack push: 'winter is coming'.
@@ -197,19 +213,6 @@ test03theSentenceFinderIsCaseSensitive
 	
 	
 ! !
-
-<<<<<<< HEAD
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 16:46:37'!
-test04theListOfMatchesIsEmptyIfThereAreNoMatchesWithThePrefix
-	| aStack aSentenceFinder |
-	aStack := OOStack new.
-	aStack push: 'algoritmos 3'.
-	aStack push: 'fiuba'.
-	
-	aSentenceFinder := SentenceFinderByPrefix new.
-
-	self assert:((aSentenceFinder find: 'de' in: aStack) isEmpty)	.
-	! !
 
 !SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 16:53:26'!
 test05afterFindingMatchesTheOriginalStackRemainsUnchanged
@@ -243,13 +246,16 @@ test06givenAStackWithRepeatedElementsTheListOfMatchesHaveThemAll
 	self assert: (matches includesAllOf: expectedMatches)	.
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:01:25'!
-test07givenAnEmptyStackTheListOfMatchesIsEmpty
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 23:10:30'!
+test07theListOfMatchesIsEmptyIfThereAreNoMatchesWithThePrefix
 	| aStack aSentenceFinder |
 	aStack := OOStack new.
+	aStack push: 'algoritmos 3'.
+	aStack push: 'fiuba'.
+	
 	aSentenceFinder := SentenceFinderByPrefix new.
 
-	self assert:( (aSentenceFinder find: 'hola' in: aStack) isEmpty)	.
+	self assert:((aSentenceFinder find: 'de' in: aStack) isEmpty)	.
 	! !
 
 !SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'va 5/14/2022 17:21:35'!
@@ -268,8 +274,6 @@ test08afterPopingAFoundElementTheListOfMatchesIsEmptyWhenFindingItAgain
 	self assert:( firstMatches first =  'Winter is here' and: secondMatches isEmpty)	.
 	! !
 
-=======
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SentenceFinderByPrefixTest class' category: 'Stack-Exercise'!
@@ -279,73 +283,88 @@ SentenceFinderByPrefixTest class
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'elements status'
+	instanceVariableNames: 'elements maxSize'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+!OOStack commentStamp: '<historical>' prior: 0!
+ver status!
 
-!OOStack methodsFor: 'initialization' stamp: 'vALENKPA 5/12/2022 16:51:48'!
+
+!OOStack methodsFor: 'initialization' stamp: 'algo3 5/14/2022 22:43:39'!
 initialize
 	elements := OrderedCollection new.
-	status := Empty new.! !
+	maxSize := nil.! !
 
-
-!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:11:40'!
-elements
-	^elements.! !
 
 !OOStack methodsFor: 'stack operations' stamp: 'va 5/10/2022 20:37:26'!
 isEmpty
 	^ elements size = 0.! !
 
-<<<<<<< HEAD
-!OOStack methodsFor: 'stack operations' stamp: 'va 5/14/2022 17:08:08'!
-=======
-!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:30:23'!
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
+!OOStack methodsFor: 'stack operations' stamp: 'algo3 5/14/2022 22:44:46'!
 pop
-	|pushedElement|
+	"|pushedElement|
 	
 	pushedElement := status popFrom: self.
-<<<<<<< HEAD
-	status := (StackStatus subclasses detect: [:aStatus| aStatus canBeAStatusOf: self]) new.
-=======
-	status := (StackStatus subclasses detect: [:aStatus| aStatus canHold: self]) new.
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
+	status := (StackState subclasses detect: [:aStatus| aStatus canBeAStatusOf: self]) new.
 	
-	^pushedElement.! !
+	^pushedElement."
+	
+	^((StackState actualStateOf: self) new) popFrom: self.! !
 
-!OOStack methodsFor: 'stack operations' stamp: 'va 5/14/2022 14:56:00'!
-popWhenNotEmpty
-		^ elements removeFirst.! !
-
-!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:40:13'!
+!OOStack methodsFor: 'stack operations' stamp: 'algo3 5/14/2022 22:39:32'!
 push: anElement
-	elements addFirst: anElement. 
-	status := NotEmpty new. "quizas hacer q no se cree uno nuevo siempre si ya tiene elementos"
+	
+	((StackState actualStateOf: self) new) push: anElement in: self.
 	! !
 
-!OOStack methodsFor: 'stack operations' stamp: 'va 5/10/2022 21:29:39'!
-size
-	^elements size.! !
-
-!OOStack methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:08:00'!
+!OOStack methodsFor: 'stack operations' stamp: 'algo3 5/14/2022 22:45:17'!
 top
-	^status topOf: self.
+	^((StackState actualStateOf: self) new) topOf:self.
 ! !
 
-!OOStack methodsFor: 'stack operations' stamp: 'va 5/14/2022 14:54:55'!
-topWhenNotEmpty
-	^elements first.! !
 
-
-!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 15:00:47'!
+!OOStack methodsFor: 'stack operations - error' stamp: 'va 5/14/2022 15:00:47'!
 canNotPopWhenEmpty
 	^ self error: self class stackEmptyErrorDescription.! !
 
-!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 15:00:57'!
+!OOStack methodsFor: 'stack operations - error' stamp: 'va 5/14/2022 23:54:40'!
+canNotPushWhenFull
+	self error: self class stackPushInAFullStackErrorDescription.! !
+
+!OOStack methodsFor: 'stack operations - error' stamp: 'va 5/14/2022 15:00:57'!
 canNotTopWhenEmpty
 	^ self error: self class stackEmptyErrorDescription.! !
+
+
+!OOStack methodsFor: 'accesing' stamp: 'vALENKPA 5/12/2022 17:11:40'!
+elements
+	^elements.! !
+
+!OOStack methodsFor: 'accesing' stamp: 'algo3 5/14/2022 22:15:09'!
+maxSize
+	^maxSize.! !
+
+!OOStack methodsFor: 'accesing' stamp: 'va 5/10/2022 21:29:39'!
+size
+	^elements size.! !
+
+
+!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 14:56:00'!
+popWhenNotEmpty
+		^ elements removeFirst.! !
+
+!OOStack methodsFor: 'private' stamp: 'algo3 5/14/2022 22:33:17'!
+pushWhenNotFull: anElement
+	^elements addFirst: anElement.! !
+
+!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 23:17:00'!
+setLimit: sizeLimit
+	maxSize := sizeLimit.! !
+
+!OOStack methodsFor: 'private' stamp: 'va 5/14/2022 14:54:55'!
+topWhenNotEmpty
+	^elements first.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -353,10 +372,20 @@ canNotTopWhenEmpty
 OOStack class
 	instanceVariableNames: ''!
 
+!OOStack class methodsFor: 'error descriptions' stamp: 'va 5/14/2022 23:44:19'!
+newWithLimit: maxSize
+	^((self new initialize) setLimit: maxSize).
+	
+	! !
+
 !OOStack class methodsFor: 'error descriptions' stamp: 'HernanWilkinson 5/7/2012 11:51'!
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+!OOStack class methodsFor: 'error descriptions' stamp: 'algo3 5/14/2022 22:22:57'!
+stackPushInAFullStackErrorDescription
+	^'Error no se puede pushear en un stack limitado lleno'! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
@@ -366,80 +395,75 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-<<<<<<< HEAD
-!SentenceFinderByPrefix methodsFor: 'private' stamp: 'algo3 5/14/2022 15:52:28'!
-isAValidPrefix: aPrefix
-	((aPrefix includesSubString: ' ')or: aPrefix = '') ifTrue: [ ^self error: self class invalidPrefixError].
-	^true.! !
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'va 5/14/2022 23:27:48'!
+checkIfPrefixIsValid: aPrefix
+
+	((aPrefix = '') or: (aPrefix includesSubString: ' ')) ifTrue: [^self error: self class invalidPrefixError].
+! !
 
 
-!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'algo3 5/14/2022 16:05:05'!
-=======
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 16:05:05'!
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
+!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'va 5/14/2022 23:28:36'!
 find: aPrefix in: aStack
-	(self isAValidPrefix: aPrefix) ifTrue: [
+	| auxiliarStack matchesCollection stackSize|.
+	
+	self checkIfPrefixIsValid: aPrefix.
 		
-		| auxiliarStack matchesCollection stackSize|
+	auxiliarStack := OOStack new.
+	matchesCollection := OrderedCollection new.
+	stackSize := aStack size.
+
+	stackSize timesRepeat: [
 		
-		auxiliarStack := OOStack new.
-		matchesCollection := OrderedCollection new.
-		stackSize := aStack size.
-		
-		stackSize timesRepeat: [
-			
-				auxiliarStack push: aStack pop.
-				(auxiliarStack top beginsWith: aPrefix) ifTrue: [ matchesCollection add: auxiliarStack top].
-			].
-		
-		stackSize timesRepeat: [aStack push: auxiliarStack  pop.].
-			
-			^matchesCollection.
-		]
+			auxiliarStack push: aStack pop.
+			(auxiliarStack top beginsWith: aPrefix) ifTrue: [ matchesCollection add: auxiliarStack top]. 
+		].
+	
+	stackSize timesRepeat: [aStack push: auxiliarStack  pop.].
+	
+	^matchesCollection.
+	
 	
 	! !
 
-<<<<<<< HEAD
-=======
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 15:52:28'!
-isAValidPrefix: aPrefix
-	((aPrefix includesSubString: ' ')or: aPrefix = '') ifTrue: [ ^self error: self class invalidPrefixError].
-	^true.! !
-
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
 
-<<<<<<< HEAD
-!SentenceFinderByPrefix class methodsFor: 'error' stamp: 'algo3 5/14/2022 15:30:36'!
-=======
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 15:30:36'!
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
+!SentenceFinderByPrefix class methodsFor: 'error descriptions' stamp: 'algo3 5/14/2022 15:30:36'!
 invalidPrefixError
 	^'El prefijo no puede contener espacios vacios ni ser vacio'.! !
 
 
-!classDefinition: #StackStatus category: 'Stack-Exercise'!
-Object subclass: #StackStatus
+!classDefinition: #StackState category: 'Stack-Exercise'!
+Object subclass: #StackState
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!StackStatus methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 16:56:50'!
+!StackState methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 16:56:50'!
 popFrom: aStack
 	self subclassResponsibility.! !
 
-!StackStatus methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:03:54'!
+!StackState methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:03:54'!
 topOf: aStack
 	self subclassResponsibility.! !
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'StackState class' category: 'Stack-Exercise'!
+StackState class
+	instanceVariableNames: ''!
+
+!StackState class methodsFor: 'as yet unclassified' stamp: 'algo3 5/14/2022 22:50:41'!
+actualStateOf: aStack
+	^(StackState subclasses detect: [:aStatus| aStatus canBeAStatusOf: aStack]).! !
+
 
 !classDefinition: #Empty category: 'Stack-Exercise'!
-StackStatus subclass: #Empty
+StackState subclass: #Empty
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -448,6 +472,10 @@ StackStatus subclass: #Empty
 !Empty methodsFor: 'stack operations' stamp: 'va 5/14/2022 15:00:28'!
 popFrom: aStack
 	^ aStack canNotPopWhenEmpty.! !
+
+!Empty methodsFor: 'stack operations' stamp: 'algo3 5/14/2022 22:32:16'!
+push: anElement in: aStack
+	^ aStack pushWhenNotFull: anElement.! !
 
 !Empty methodsFor: 'stack operations' stamp: 'vALENKPA 5/12/2022 17:04:32'!
 topOf: aStack
@@ -459,18 +487,35 @@ topOf: aStack
 Empty class
 	instanceVariableNames: ''!
 
-<<<<<<< HEAD
-!Empty class methodsFor: 'support' stamp: 'va 5/14/2022 17:08:06'!
+!Empty class methodsFor: 'state check' stamp: 'va 5/14/2022 17:08:06'!
 canBeAStatusOf: aStack
-=======
-!Empty class methodsFor: 'support' stamp: 'vALENKPA 5/12/2022 17:26:01'!
-canHold: aStack
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 	^aStack isEmpty.! !
 
 
+!classDefinition: #Full category: 'Stack-Exercise'!
+StackState subclass: #Full
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!Full methodsFor: 'stack operations' stamp: 'algo3 5/14/2022 22:23:56'!
+push: anElement in: aStack
+	^aStack canNotPushWhenFull.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Full class' category: 'Stack-Exercise'!
+Full class
+	instanceVariableNames: ''!
+
+!Full class methodsFor: 'state check' stamp: 'algo3 5/14/2022 22:14:55'!
+canBeAStatusOf: aStack
+	^aStack size = aStack maxSize.! !
+
+
 !classDefinition: #NotEmpty category: 'Stack-Exercise'!
-StackStatus subclass: #NotEmpty
+StackState subclass: #NotEmpty
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -479,6 +524,10 @@ StackStatus subclass: #NotEmpty
 !NotEmpty methodsFor: 'stack operations' stamp: 'va 5/14/2022 15:02:07'!
 popFrom: aStack
 	^aStack popWhenNotEmpty.! !
+
+!NotEmpty methodsFor: 'stack operations' stamp: 'algo3 5/14/2022 22:32:23'!
+push: anElement in: aStack
+	^ aStack pushWhenNotFull: anElement.! !
 
 !NotEmpty methodsFor: 'stack operations' stamp: 'va 5/14/2022 14:54:30'!
 topOf: aStack
@@ -490,11 +539,6 @@ topOf: aStack
 NotEmpty class
 	instanceVariableNames: ''!
 
-<<<<<<< HEAD
-!NotEmpty class methodsFor: 'support' stamp: 'va 5/14/2022 17:08:08'!
+!NotEmpty class methodsFor: 'state check' stamp: 'va 5/14/2022 17:08:08'!
 canBeAStatusOf: aStack
-=======
-!NotEmpty class methodsFor: 'support' stamp: 'vALENKPA 5/12/2022 17:44:28'!
-canHold: aStack
->>>>>>> ad43cc5d0b504f94e5066bae64afd67507aceb6f
 	^aStack isEmpty not.! !
