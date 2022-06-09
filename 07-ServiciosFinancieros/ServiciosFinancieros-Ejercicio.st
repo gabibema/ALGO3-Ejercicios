@@ -1,193 +1,128 @@
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #PortfolioTest
-	instanceVariableNames: 'firstAccount secondAccount'
+	instanceVariableNames: 'firstAccount secondAccount portfolioWithAnAccount portfolioWithAnEmptyPortfolio emptyPortfolio portfolioWithAPortfolioThatHasAnAccount portfolioWithAnAccountAndAPortfolioThatHasAnAccount portfolioWithAnAccountCopy'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:23'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 17:04:29'!
 setUp
 	firstAccount _ ReceptiveAccount new.
-	secondAccount _ ReceptiveAccount new.! !
+	secondAccount _ ReceptiveAccount new.
+	emptyPortfolio  _ Portfolio new.
+	portfolioWithAnAccount _ Portfolio with: firstAccount.
+	portfolioWithAnAccountCopy _ Portfolio  with: firstAccount.
+	portfolioWithAnEmptyPortfolio _ Portfolio with: emptyPortfolio.
+	portfolioWithAPortfolioThatHasAnAccount  _ Portfolio with: portfolioWithAnAccount .
+	portfolioWithAnAccountAndAPortfolioThatHasAnAccount  _ (Portfolio with: portfolioWithAnAccount)add:secondAccount.
+	! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:36:29'!
 test01PortfolioHasZeroAsBalanceWhenCreatedWithAnEmptyAccount
-	|portfolio |
-	portfolio _ Portfolio with: firstAccount .
-	
-	self assert: portfolio balance equals: 0 * peso.! !
+	self assert: portfolioWithAnAccount balance equals: 0 * peso.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:23'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:37:18'!
 test02DepositInAnAccountIncreasesBalanceOnThePortfolio
-	|portfolio |
+	Deposit register: 10 * peso on: firstAccount .
 
-	portfolio _ Portfolio with: firstAccount .
-	Deposit register: 10 * peso on: secondAccount .
-	portfolio add: secondAccount .
 	
-	self assert: portfolio balance equals: 10 * peso.! !
+	self assert: portfolioWithAnAccount balance equals: 10 * peso.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:37:44'!
 test03PortfolioDoesNotHaveAnAccountThatRegisteredASpecificTransaction
-	|portfolio transaction|
-
-	portfolio _ Portfolio with: firstAccount .
+	| transaction |
 	transaction _ Deposit for: 20*peso.
 	
-	self deny: (portfolio hasRegistered: transaction).! !
+	self deny: (portfolioWithAnAccount hasRegistered: transaction).! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:38:04'!
 test04PortfolioHasAnAccountThatRegisteredASpecificTransaction
-	|portfolio transaction|
-
-	portfolio _ Portfolio with: firstAccount .
+	|transaction|
 	transaction _ Deposit register: 20*peso on: firstAccount .
 	
-	self assert: (portfolio hasRegistered: transaction).! !
+	self assert: (portfolioWithAnAccount hasRegistered: transaction).! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:38:30'!
 test05PortfolioHasNoTransactionsWhenAnyAccountRegisteredATransaction
-	|portfolio |
+	self assert: portfolioWithAnAccount transactions isEmpty.! !
 
-	portfolio _ Portfolio with: firstAccount .
-	
-	self assert: portfolio transactions isEmpty.! !
-
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:38:46'!
 test06PortfolioHasATransactionWhenAnAccountRegisteredATransaction
-	|portfolio |
-
-	portfolio _ Portfolio with: firstAccount .
 	Deposit register: 20*peso on: firstAccount .
 	
-	self assert: (portfolio transactions size) equals: 1.! !
+	self assert: (portfolioWithAnAccount transactions size) equals: 1.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/8/2022 19:14:23'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:41:27'!
 test07PortfolioBalanceIsZeroWhenContainingAnEmptyPortfolio
-	|portfolio1 portfolio2 |
-	portfolio1 _ Portfolio new.
-	portfolio2 _ Portfolio new.
-	portfolio1 add: portfolio2.
-	
-	self assert: portfolio1 balance equals: 0 * peso.! !
+	self assert: portfolioWithAnEmptyPortfolio balance equals: 0 * peso.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:42:40'!
 test08DepositInAnAccountContainedInAPortfolioIncreasesBalanceOnTheOtherPortfolio
-	|portfolio1 portfolio2 |
-	portfolio1 _ Portfolio new.
-	portfolio2 _ Portfolio new.
-
-	portfolio1 add: portfolio2.
-	portfolio2 add: firstAccount .
+	emptyPortfolio add: firstAccount .
 	Deposit register: 1000*peso  on: firstAccount .
 	
-	self assert: portfolio1 balance equals: 1000 * peso. ! !
+	self assert: portfolioWithAnEmptyPortfolio balance equals: 1000 * peso. ! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:23'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:43:40'!
 test09ATransactionMadeToAnAccountContainedInAPortfolioIsRegisteredInTheOtherPortfolio
-	|portfolio1 portfolio2 transaction|
-	portfolio1 _ Portfolio new.
-	portfolio2 _ Portfolio new.
-	
-	portfolio1 add: portfolio2.
-	portfolio1 add: secondAccount .
-	portfolio2 add: firstAccount .
+	| transaction |
+	emptyPortfolio add: secondAccount .
+	portfolioWithAnEmptyPortfolio add: firstAccount .
 	
 	transaction _ Withdraw register: 1000*peso  on: firstAccount .
 	
-	self assert: (portfolio1 hasRegistered: transaction).! !
+	self assert: (portfolioWithAnEmptyPortfolio hasRegistered: transaction).! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:23'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:51:48'!
 test10ATransactionMadeToAnAccountContainedInAPortfolioIncreasesTheTotalTransactionsOfTheOtherOne
-	|portfolio1 portfolio2 |
-	portfolio1 _ Portfolio new.
-	portfolio2 _ Portfolio new.
-	
-	portfolio1 add: portfolio2.
-	portfolio1 add: secondAccount .
-	portfolio2 add: firstAccount .
 	
 	Deposit register: 1000*peso  on: firstAccount .
 	
-	self assert: (portfolio1 transactions size) equals: 1.! !
+	self assert: (portfolioWithAPortfolioThatHasAnAccount transactions size) equals: 1.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:23'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:50:52'!
 test11TransactionsMadeToAccountsContainedInPortfoliosIncreasesTheTotalTransactionsOfThePortfolio
-	|portfolio1 portfolio2 thirdAccount|
-	portfolio1 _ Portfolio new.
-	portfolio2 _ Portfolio new.
-	
-	thirdAccount _ ReceptiveAccount new.
-	
-	portfolio1 add: portfolio2.
-	portfolio1 add: secondAccount .
-	portfolio2 add: thirdAccount.
-	portfolio2 add: firstAccount .
 	
 	Deposit register: 1000*peso  on: firstAccount .
 	Deposit register: 1000*peso  on: firstAccount .
 	Deposit register: 1000*peso  on: firstAccount .
 	Deposit register: 1000*peso  on: secondAccount .
-	Deposit register: 1000*peso  on: thirdAccount .
 	
-	self assert: (portfolio1 transactions size) equals: 5.! !
+	self assert: (portfolioWithAnAccountAndAPortfolioThatHasAnAccount transactions size) equals: 4.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:53:29'!
 test12PortfolioCanNotAddAnAlreadyAddedAccount
-	|portfolio |
-	
-	portfolio _ Portfolio with: firstAccount.
-	
-	self should: [portfolio add: firstAccount ] 
+	self should: [portfolioWithAnAccount add: firstAccount ] 
 	      raise: Error
 	      withExceptionDo: [:anError| self assert: anError messageText equals: Portfolio canNotAddAnAlreadyAddedAccountErrorDescription].
 	! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:54:43'!
 test13PortfolioCanNotAddAnAccountThatIsAlreadyInAnAddedPortfolio
-	|portfolio2 portfolio1|
-
-	portfolio2 _ Portfolio with: firstAccount.
-	portfolio1 _ Portfolio new.
-	portfolio1 add: portfolio2.
-	
-	self should: [portfolio2 add: firstAccount ] 
+	self should: [portfolioWithAPortfolioThatHasAnAccount add: firstAccount] 
 	      raise: Error
 	      withExceptionDo: [:anError| self assert: anError messageText equals: Portfolio canNotAddAnAlreadyAddedAccountErrorDescription].
 	! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:12:51'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 16:55:06'!
 test14PortfolioCanNotAddItself
-	|portfolio|
-	portfolio _ Portfolio new.
-	
-	self should: [portfolio add: portfolio ] 
+	self should: [emptyPortfolio add: emptyPortfolio] 
 	      raise: Error
 	      withExceptionDo: [:anError| self assert: anError messageText equals: Portfolio canNotAddAnAlreadyAddedAccountErrorDescription].
 	! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 17:03:12'!
 test15PortfolioCanNotAddAnAccountThatHasBeenAddedToAFather
-	|portfolio2 portfolio1|
+	portfolioWithAnEmptyPortfolio add: firstAccount.
 	
-	portfolio2 _ Portfolio new.
-	portfolio1 _ Portfolio new.
-	portfolio1 add: firstAccount.
-	portfolio1 add: portfolio2.
-	
-	self should: [portfolio2 add: firstAccount ] 
+	self should: [emptyPortfolio add: firstAccount]
 	      raise: Error
 	      withExceptionDo: [:anError| self assert: anError messageText equals: Portfolio canNotAddAnAccountThatHasBeenAddedToAFatherErrorDescription ].
 	! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'valentina 6/9/2022 10:25:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 17:04:34'!
 test16PortfolioCanNotAddPorfolioWithAnAccountThatIsAlreadyInThePortfolio
-	|portfolio1 portfolio2 |
-
-	portfolio1 _ Portfolio with: firstAccount.
-	portfolio2 _ Portfolio with: firstAccount.
-	
-	self should: [portfolio1 add: portfolio2]
+	self should: [ portfolioWithAnAccountCopy add: portfolioWithAnAccount ]
 	      raise: Error
 	      withExceptionDo: [:anError| self assert: anError messageText equals: Portfolio canNotAddPorfolioWithAnAccountThatIsAlreadyInThePortfolioErrorDescription ]! !
 
@@ -295,16 +230,13 @@ setUp
 	firstAccount _ ReceptiveAccount new.
 	secondAccount _ ReceptiveAccount new.! !
 
-!TransferTest methodsFor: 'tests' stamp: 'A 6/6/2022 20:31:53'!
+!TransferTest methodsFor: 'tests' stamp: 'algo3 6/9/2022 17:12:43'!
 test01TransferExtractsFromAnAccountAndItsBalanceIsZero
 	|valueOfTransfer|
-
 	valueOfTransfer _ 50 * peso.
-	
-	Deposit register: valueOfTransfer on: firstAccount .
 	Transfer from: firstAccount to: secondAccount value: valueOfTransfer.
 	
-	self assert: firstAccount balance equals: 0*peso.
+	self assert: firstAccount balance equals: valueOfTransfer negated.
 
 	
 	! !
@@ -407,6 +339,197 @@ test09CanNotMakeATransferWithANegativeValue
 		raise: Error
 		withExceptionDo: [:anError| self assert: anError messageText equals: Transfer invalidTransferValueErrorDescription].
 	! !
+
+
+!classDefinition: #Account category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Account
+	instanceVariableNames: 'fathers'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Account methodsFor: 'main protocol' stamp: 'algo3 6/9/2022 17:19:45'!
+balance
+	self subclassResponsibility ! !
+
+
+!Account methodsFor: 'inicialization' stamp: 'algo3 6/9/2022 17:20:44'!
+initialize
+	self subclassResponsibility ! !
+
+
+!Account methodsFor: 'private' stamp: 'algo3 6/9/2022 17:18:10'!
+accounts
+	! !
+
+!Account methodsFor: 'private' stamp: 'algo3 6/9/2022 17:15:46'!
+addFather: aNewFatherPortfolio
+	fathers add: aNewFatherPortfolio.! !
+
+!Account methodsFor: 'private' stamp: 'algo3 6/9/2022 17:19:17'!
+hasRegistered: aTransaction
+	self subclassResponsibility.! !
+
+!Account methodsFor: 'private' stamp: 'algo3 6/9/2022 17:17:17'!
+isComposedBy: anAccount
+	self subclassResponsibility.! !
+
+!Account methodsFor: 'private' stamp: 'algo3 6/9/2022 17:17:31'!
+isComposedByAnyOf: anAccount
+	self subclassResponsibility.! !
+
+
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Account subclass: #Portfolio
+	instanceVariableNames: 'accounts'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'initialization' stamp: 'algo3 6/8/2022 22:59:06'!
+initialize
+	accounts _ OrderedCollection new.
+	fathers _ OrderedCollection new.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'algo3 6/8/2022 23:01:11'!
+initializeWith: anAccount
+	accounts _ OrderedCollection with: anAccount.
+	anAccount addFather: self.! !
+
+
+!Portfolio methodsFor: 'verify' stamp: 'valentina 6/9/2022 14:51:42'!
+verifyIfAccountIsAlreadyAdded: anAccountToBeChecked
+
+	self verifyIfAnAccountIsComposedBy: anAccountToBeChecked .
+	self verifyIfAnyFatherHasAnAccount: anAccountToBeChecked.
+	self verifyIfPortolioAccountsAreAlreadyAdded: anAccountToBeChecked.
+	
+
+	
+	! !
+
+!Portfolio methodsFor: 'verify' stamp: 'valentina 6/9/2022 14:51:42'!
+verifyIfAnAccountIsComposedBy: anAccountToBeChecked
+	(self isComposedBy: anAccountToBeChecked) ifTrue: [^self error: self class canNotAddAnAlreadyAddedAccountErrorDescription]! !
+
+!Portfolio methodsFor: 'verify' stamp: 'valentina 6/9/2022 14:51:33'!
+verifyIfAnyFatherHasAnAccount: anAccountToBeChecked
+	(self fathersHaveAnAccount: anAccountToBeChecked) ifTrue:[^self error: self class canNotAddAnAccountThatHasBeenAddedToAFatherErrorDescription] ! !
+
+!Portfolio methodsFor: 'verify' stamp: 'valentina 6/9/2022 14:51:23'!
+verifyIfPortolioAccountsAreAlreadyAdded: anAccountToBeChecked
+	^ (self isComposedByAnyOf: anAccountToBeChecked accounts) ifTrue: [self error: self class canNotAddPorfolioWithAnAccountThatIsAlreadyInThePortfolioErrorDescription].! !
+
+
+!Portfolio methodsFor: 'main protocol' stamp: 'valentina 6/9/2022 14:51:11'!
+add: anAccount
+	self verifyIfAccountIsAlreadyAdded: anAccount.
+	accounts add: anAccount.
+	anAccount addFather: self.! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'algo3 6/7/2022 16:05:11'!
+balance
+	^accounts sum: [:account | account balance] ifEmpty: [^0*peso].! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'algo3 6/7/2022 16:17:27'!
+hasRegistered: aTransaction
+	accounts detect: [:account| account hasRegistered: aTransaction] ifFound:[:account| ^true] ifNone:[ ^false].! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'algo3 6/7/2022 17:39:50'!
+transactions	
+	| transactions |
+	transactions _ OrderedCollection new.
+
+	accounts  do: [:account | transactions addAll: account transactions].
+	
+	^transactions.! !
+
+
+!Portfolio methodsFor: 'private' stamp: 'valentina 6/9/2022 09:49:37'!
+accounts
+	^accounts ! !
+
+!Portfolio methodsFor: 'private' stamp: 'valentina 6/9/2022 09:27:29'!
+fathersHaveAnAccount: anAccountToBeChecked
+	^fathers anySatisfy: [:father | father isComposedBy: anAccountToBeChecked].! !
+
+!Portfolio methodsFor: 'private' stamp: 'valentina 6/9/2022 14:48:38'!
+isComposedBy: anAccountToBeChecked
+	^(self = anAccountToBeChecked ) or: [accounts anySatisfy: [:account | account isComposedBy: anAccountToBeChecked]].! !
+
+!Portfolio methodsFor: 'private' stamp: 'valentina 6/9/2022 09:50:46'!
+isComposedByAnyOf: aGroupOfAccounts
+	^aGroupOfAccounts anySatisfy: [:anAccount | self isComposedBy: anAccount ].! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
+	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'error' stamp: 'valentina 6/9/2022 10:14:53'!
+canNotAddAnAccountThatHasBeenAddedToAFatherErrorDescription
+	^'Account has already been added in a father'.! !
+
+!Portfolio class methodsFor: 'error' stamp: 'valentina 6/9/2022 09:38:51'!
+canNotAddAnAlreadyAddedAccountErrorDescription
+	^'The account is already in the portfolio'.! !
+
+!Portfolio class methodsFor: 'error' stamp: 'valentina 6/9/2022 09:38:42'!
+canNotAddPorfolioWithAnAccountThatIsAlreadyInThePortfolioErrorDescription
+	^'The account is already in the portfolio'.! !
+
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'valentina 6/8/2022 19:56:08'!
+with: anAccount
+
+	^self new initializeWith: anAccount.! !
+
+
+!classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
+Account subclass: #ReceptiveAccount
+	instanceVariableNames: 'transactions'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'algo3 6/8/2022 23:03:45'!
+initialize
+
+	transactions _ OrderedCollection new.
+	fathers _ OrderedCollection new.! !
+
+
+!ReceptiveAccount methodsFor: 'portfolio operations' stamp: 'valentina 6/9/2022 09:57:42'!
+anySatisfy: anAccount
+	^false! !
+
+!ReceptiveAccount methodsFor: 'portfolio operations' stamp: 'valentina 6/9/2022 09:25:05'!
+isComposedBy: anAccountToBeChecked
+	^self = anAccountToBeChecked.! !
+
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'A 6/6/2022 21:39:10'!
+balance
+
+	^transactions sum: [ :aTransaction | aTransaction valueForBalance ] ifEmpty: [ 0 * peso ]! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
+hasRegistered: aTransaction
+
+	^ transactions includes: aTransaction 
+! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
+register: aTransaction
+
+	transactions add: aTransaction 
+! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
+transactions 
+
+	^ transactions copy! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -593,170 +716,6 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
-Object subclass: #Portfolio
-	instanceVariableNames: 'accounts fathers'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!Portfolio methodsFor: 'initialization' stamp: 'algo3 6/8/2022 22:59:06'!
-initialize
-	accounts _ OrderedCollection new.
-	fathers _ OrderedCollection new.! !
-
-!Portfolio methodsFor: 'initialization' stamp: 'algo3 6/8/2022 23:01:11'!
-initializeWith: anAccount
-	accounts _ OrderedCollection with: anAccount.
-	anAccount addFather: self.! !
-
-
-!Portfolio methodsFor: 'check' stamp: 'valentina 6/9/2022 10:27:53'!
-checkIfAccountIsAlreadyAdded: anAccountToBeChecked
-
-	self checkIfAnAccountIsComposedBy: anAccountToBeChecked .
-	self checkIfAnyFatherHasAnAccount: anAccountToBeChecked.
-	self checkIfPortolioAccountsAreAlreadyAdded: anAccountToBeChecked.
-	
-
-	
-	! !
-
-!Portfolio methodsFor: 'check' stamp: 'valentina 6/9/2022 10:27:48'!
-checkIfAnAccountIsComposedBy: anAccountToBeChecked
-	(self isComposedBy: anAccountToBeChecked) ifTrue: [^self error: self class canNotAddAnAlreadyAddedAccountErrorDescription]! !
-
-!Portfolio methodsFor: 'check' stamp: 'valentina 6/9/2022 10:14:54'!
-checkIfAnyFatherHasAnAccount: anAccountToBeChecked
-	(self fathersHaveAnAccount: anAccountToBeChecked) ifTrue:[^self error: self class canNotAddAnAccountThatHasBeenAddedToAFatherErrorDescription] ! !
-
-!Portfolio methodsFor: 'check' stamp: 'valentina 6/9/2022 09:52:42'!
-checkIfPortolioAccountsAreAlreadyAdded: anAccountToBeChecked
-	^ (self isComposedByAnyOf: anAccountToBeChecked accounts) ifTrue: [self error: self class canNotAddPorfolioWithAnAccountThatIsAlreadyInThePortfolioErrorDescription].! !
-
-
-!Portfolio methodsFor: 'main protocol' stamp: 'valentina 6/9/2022 09:25:41'!
-add: anAccount
-	self checkIfAccountIsAlreadyAdded: anAccount.
-	accounts add: anAccount.
-	anAccount addFather: self.! !
-
-!Portfolio methodsFor: 'main protocol' stamp: 'algo3 6/7/2022 16:05:11'!
-balance
-	^accounts sum: [:account | account balance] ifEmpty: [^0*peso].! !
-
-!Portfolio methodsFor: 'main protocol' stamp: 'algo3 6/7/2022 16:17:27'!
-hasRegistered: aTransaction
-	accounts detect: [:account| account hasRegistered: aTransaction] ifFound:[:account| ^true] ifNone:[ ^false].! !
-
-!Portfolio methodsFor: 'main protocol' stamp: 'algo3 6/7/2022 17:39:50'!
-transactions	
-	| transactions |
-	transactions _ OrderedCollection new.
-
-	accounts  do: [:account | transactions addAll: account transactions].
-	
-	^transactions.! !
-
-
-!Portfolio methodsFor: 'private' stamp: 'valentina 6/9/2022 09:49:37'!
-accounts
-	^accounts ! !
-
-!Portfolio methodsFor: 'private' stamp: 'algo3 6/8/2022 23:03:09'!
-addFather: aNewFatherPortfolio
-	fathers add: aNewFatherPortfolio.! !
-
-!Portfolio methodsFor: 'private' stamp: 'valentina 6/9/2022 09:27:29'!
-fathersHaveAnAccount: anAccountToBeChecked
-	^fathers anySatisfy: [:father | father isComposedBy: anAccountToBeChecked].! !
-
-!Portfolio methodsFor: 'private' stamp: 'valentina 6/9/2022 09:27:52'!
-isComposedBy: anAccountToBeChecked
-	^(self = anAccountToBeChecked ) or: [accounts anySatisfy: [:father | father isComposedBy: anAccountToBeChecked]].! !
-
-!Portfolio methodsFor: 'private' stamp: 'valentina 6/9/2022 09:50:46'!
-isComposedByAnyOf: aGroupOfAccounts
-	^aGroupOfAccounts anySatisfy: [:anAccount | self isComposedBy: anAccount ].! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
-Portfolio class
-	instanceVariableNames: ''!
-
-!Portfolio class methodsFor: 'error' stamp: 'valentina 6/9/2022 10:14:53'!
-canNotAddAnAccountThatHasBeenAddedToAFatherErrorDescription
-	^'Account has already been added in a father'.! !
-
-!Portfolio class methodsFor: 'error' stamp: 'valentina 6/9/2022 09:38:51'!
-canNotAddAnAlreadyAddedAccountErrorDescription
-	^'The account is already in the portfolio'.! !
-
-!Portfolio class methodsFor: 'error' stamp: 'valentina 6/9/2022 09:38:42'!
-canNotAddPorfolioWithAnAccountThatIsAlreadyInThePortfolioErrorDescription
-	^'The account is already in the portfolio'.! !
-
-
-!Portfolio class methodsFor: 'instance creation' stamp: 'valentina 6/8/2022 19:56:08'!
-with: anAccount
-
-	^self new initializeWith: anAccount.! !
-
-
-!classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
-Object subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions fathers'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!ReceptiveAccount methodsFor: 'initialization' stamp: 'algo3 6/8/2022 23:03:45'!
-initialize
-
-	transactions _ OrderedCollection new.
-	fathers _ OrderedCollection new.! !
-
-
-!ReceptiveAccount methodsFor: 'portfolio operations' stamp: 'valentina 6/9/2022 09:54:05'!
-accounts! !
-
-!ReceptiveAccount methodsFor: 'portfolio operations' stamp: 'algo3 6/8/2022 23:03:18'!
-addFather: aNewFatherPortfolio
-	fathers add: aNewFatherPortfolio.! !
-
-!ReceptiveAccount methodsFor: 'portfolio operations' stamp: 'valentina 6/9/2022 09:57:42'!
-anySatisfy: anAccount
-	^false! !
-
-!ReceptiveAccount methodsFor: 'portfolio operations' stamp: 'valentina 6/9/2022 09:25:05'!
-isComposedBy: anAccountToBeChecked
-	^self = anAccountToBeChecked.! !
-
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'A 6/6/2022 21:39:10'!
-balance
-
-	^transactions sum: [ :aTransaction | aTransaction valueForBalance ] ifEmpty: [ 0 * peso ]! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
-hasRegistered: aTransaction
-
-	^ transactions includes: aTransaction 
-! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
-register: aTransaction
-
-	transactions add: aTransaction 
-! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
-transactions 
-
-	^ transactions copy! !
-
-
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transfer
 	instanceVariableNames: 'value depositLeg withdrawLeg'
@@ -794,10 +753,9 @@ Transfer class
 for: aValue
 	^self new initializeFor: aValue. ! !
 
-!Transfer class methodsFor: 'instance creation' stamp: 'valentina 6/9/2022 10:30:07'!
+!Transfer class methodsFor: 'instance creation' stamp: 'valentina 6/9/2022 14:37:29'!
 from: aReceptiveAccount1 to: aReceptiveAccount2 value: aValue
 	self checkTransferValue: aValue.
-
 
 	Deposit register: aValue on: aReceptiveAccount2.
 	Withdraw register: aValue on: aReceptiveAccount1. 
