@@ -164,6 +164,84 @@ test07TransferNetOfAPortfolioWithAnAccountThatHasTransactionsIsTheExpectedBalanc
 	self assert: (AccountTransferNet of: aPortfolioWithAnAccount) equals: 18*peso.! !
 
 
+!classDefinition: #PortfolioDetailedTreePrinterTest category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+TestCase subclass: #PortfolioDetailedTreePrinterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:50:50'!
+test01PortfolioDetailedTreePrinterCanNotPrintAnUnnamedPortfolio
+	| aPortfolio | aPortfolio _ Portfolio named: ''.
+	self should: [ PortfolioDetailedTreePrinter of: aPortfolio]
+	       raise: Error
+	       withExceptionDo: [:anError| self assert: anError messageText equals: PortfolioDetailedTreePrinter canNotPrintATreeOfAnAnUnnamedAccountErrorDescription].
+	       ! !
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:54:09'!
+test02PortfolioDetailedTreePrinterCanPrintTheNameOfAPortfolioAndItsBalance
+	| aPortfolioChiquito expectedDetailedTree| 
+	aPortfolioChiquito _ Portfolio named: 'Portfolio chiquito'.
+	expectedDetailedTree _ OrderedCollection newFrom: {'Portfolio chiquito'. String tab, String tab, 'Balance = 0 pesos'}.
+	self assert: (PortfolioDetailedTreePrinter of: aPortfolioChiquito) equals: expectedDetailedTree.! !
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:56:51'!
+test03PortfolioDetailesTreePrinterCanPrintAPortfolioWithAnAccountWithNoTransactions
+	| aPortfolioChiquito expectedDetailedTree anAccount | 
+	aPortfolioChiquito _ Portfolio named: 'Portfolio chiquito'.
+	anAccount  _ ReceptiveAccount named: 'Cuenta mía'.
+	aPortfolioChiquito add: anAccount.
+	expectedDetailedTree _ OrderedCollection newFrom: {'Portfolio chiquito'.String tab, String tab, 'Cuenta mía'.String tab, String tab,String tab, String tab, 'Balance = 0 pesos'. String tab, String tab, 'Balance = 0 pesos'}.
+
+	self assert: (PortfolioDetailedTreePrinter of: aPortfolioChiquito ) equals: expectedDetailedTree.! !
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:56:45'!
+test04PortfolioDetailedPrinterCanPrintAPortfolioAndAnAccountWithItsSummary
+	| aPortfolioChiquito expectedDetailedTree anAccount | 
+	aPortfolioChiquito _ Portfolio named: 'Portfolio chiquito'.
+	anAccount  _ ReceptiveAccount named: 'Cuenta mía'.
+	Deposit register: 5000 * peso  on: anAccount. 
+	aPortfolioChiquito add: anAccount.
+	expectedDetailedTree _ OrderedCollection newFrom: {'Portfolio chiquito'.
+						String tab, String tab, 'Cuenta mía'.
+						String tab,String tab,String tab, String tab,'Depósito por 5000 pesos'. 
+						String tab,String tab, String tab, String tab,'Balance = 5000 pesos'.
+						 String tab, String tab, 'Balance = 5000 pesos'}.
+
+	self assert: (PortfolioDetailedTreePrinter of: aPortfolioChiquito) equals: expectedDetailedTree.! !
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:59:38'!
+test05PortfolioDetailedTreePrinterCanPrintAComposedPortfolioWithManyAccountsAndTheirSummaries
+	| angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount expectedTree |
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount := ReceptiveAccount named: 'Cuenta mia'. 
+	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	Deposit register: 5*peso on: myAccount.
+	Transfer amount: 5 from: angiesAccount to: johnsAccount.
+	expectedTree _ OrderedCollection newFrom: {'Portfolio de la familia'.
+   				   String tab, String tab,'Cuenta mia'.
+				   String tab,String tab, String tab, String tab,'Depósito por 5 pesos'.
+				   String tab,String tab, String tab, String tab,'Balance = 5 pesos'.
+    				   String tab, String tab,'Portfolio de hijos'.
+      			 	   String tab, String tab,String tab, String tab,'Cuenta de Juan'.
+			           String tab,String tab, String tab, String tab,String tab,String tab,'Entrada por transferencia de 5 pesos'.
+				   String tab,String tab, String tab, String tab,String tab,String tab,'Balance = 5 pesos'.
+       			          String tab, String tab,String tab, String tab,'Cuenta de Angeles'.
+				   String tab,String tab, String tab, String tab,String tab,String tab,'Salida por transferencia de 5 pesos'.
+				   String tab,String tab, String tab, String tab,String tab,String tab,'Balance = -5 pesos'.
+			          String tab, String tab,String tab, String tab,'Balance = 0 pesos'.
+				  String tab, String tab,'Balance = 5 pesos'}.
+		
+	self assert: (PortfolioDetailedTreePrinter of: familyPortfolio) equals: expectedTree.
+	
+	
+! !
+
+
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 TestCase subclass: #PortfolioTest
 	instanceVariableNames: ''
@@ -375,6 +453,69 @@ test15PortfolioCanNotIncludeAnyOfTheComposedAccountOfPortfolioToAdd
 		withExceptionDo: [ :anError | 
 			self assert: Portfolio canNotAddAccountErrorMessage equals: anError messageText.
 			self assert: portfolioToModify accountsIsEmpty ]! !
+
+
+!classDefinition: #PortfolioTreePrinterTest category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+TestCase subclass: #PortfolioTreePrinterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:59:58'!
+test01PortfolioTreePrinterCanNotPrintAnUnnamedPortfolio
+	|portfolio|
+	portfolio  _ Portfolio named: ''.
+	
+	self should:  [PortfolioTreePrinter of: portfolio]
+	       raise: Error
+	       withExceptionDo:[:anError| self assert: anError messageText equals: PortfolioTreePrinter canNotPrintATreeOfAnAnUnnamedAccountErrorDescription].! !
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 10:00:28'!
+test02PortfolioTreePrinterCanPrintTheNameOfAPortfolio
+	|portfolio|
+	portfolio  _ Portfolio named: 'Portfolio chiquito'.
+	
+	self assert:  (PortfolioTreePrinter of: portfolio) equals: (OrderedCollection with:'Portfolio chiquito').! !
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 10:00:35'!
+test03PortfolioTreePrinterCanPrintAPortfolioWithAnAccount
+	|portfolio anAccount expectedTree|
+	expectedTree _ OrderedCollection newFrom: {'Portfolio chiquito'. 
+			          String tab,String tab,'Mi cuenta'}.
+	portfolio  _ Portfolio named: 'Portfolio chiquito'.
+	anAccount _ ReceptiveAccount named: 'Mi cuenta'.
+	portfolio add: anAccount.
+	self assert:  (PortfolioTreePrinter of: portfolio) equals: expectedTree.! !
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 10:00:44'!
+test04PortfolioTreePrinterCanPrintAComposedPortfolioWithAnAccount
+	|portfolio portfolio2 anAccount expectedTree|
+	expectedTree _ OrderedCollection newFrom: {'Portfolio chiquito'. 
+				   String tab,String tab,'Portfolio porfiado'. 
+				   String tab,String tab,'Mi cuenta'}.
+	portfolio  _ Portfolio named: 'Portfolio chiquito'.
+	portfolio2 _ Portfolio named: 'Portfolio porfiado'.
+	anAccount _ ReceptiveAccount named: 'Mi cuenta'.
+	portfolio add: portfolio2.
+	portfolio add: anAccount.
+
+	self assert:  (PortfolioTreePrinter of: portfolio) equals: expectedTree.! !
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 10:00:55'!
+test05PortfolioTreePrinterCanPrintAComposedPortfolioWithManyAccounts
+	| angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount expectedTree|
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount := ReceptiveAccount named: 'Cuenta mia'. 
+	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	expectedTree _ OrderedCollection newFrom: {'Portfolio de la familia'.
+   				   String tab, String tab,'Cuenta mia'.
+    				   String tab, String tab,'Portfolio de hijos'.
+      			 	   String tab, String tab,String tab, String tab,'Cuenta de Juan'.
+       			           String tab, String tab,String tab, String tab,'Cuenta de Angeles'}.
+	self assert: (PortfolioTreePrinter of: familyPortfolio) equals: expectedTree.! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio-Solucion'!
@@ -614,7 +755,7 @@ addTransactionsTo: aCollectionOfTransactions
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 Account subclass: #Portfolio
-	instanceVariableNames: 'accounts parents'
+	instanceVariableNames: 'name accounts parents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
@@ -624,6 +765,10 @@ initialize
 
 	accounts := OrderedCollection new.
 	parents := OrderedCollection new.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'algo3 6/14/2022 19:59:47'!
+initializeWithName: aName
+	name _ aName.! !
 
 
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:19:36'!
@@ -677,6 +822,19 @@ addTransactionsTo: aCollectionOfTransactions
 
 	accounts do: [ :anAccount | anAccount addTransactionsTo: aCollectionOfTransactions ]! !
 
+
+!Portfolio methodsFor: 'reports' stamp: 'algo3 6/14/2022 22:50:00'!
+accept: aReport
+	aReport visitPortfolio: self.! !
+
+!Portfolio methodsFor: 'reports' stamp: 'algo3 6/14/2022 22:55:54'!
+name
+	^name.! !
+
+
+!Portfolio methodsFor: 'composition' stamp: 'algo3 6/14/2022 23:00:58'!
+accounts
+	^accounts.! !
 
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:17:31'!
 addRootParentsTo: rootParents
@@ -733,6 +891,20 @@ canNotAddAccountErrorMessage
 	^'Can not add repeated account to a portfolio'! !
 
 
+!Portfolio class methodsFor: 'instance creation' stamp: 'algo3 6/14/2022 20:12:55'!
+named: aName
+	^self new initializeWithName: aName
+	! !
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'algo3 6/15/2022 22:23:09'!
+named: aName with: anAccount with: anotherAccount
+
+	^self new 
+		initializeWithName: aName;
+		add: anAccount;
+		add: anotherAccount;
+		yourself! !
+
 !Portfolio class methodsFor: 'instance creation' stamp: 'HAW 5/25/2019 11:18:21'!
 with: anAccount
 
@@ -751,7 +923,7 @@ with: anAccount with: anotherAccount
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 Account subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions'
+	instanceVariableNames: 'transactions name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
@@ -761,6 +933,10 @@ initialize
 
 	super initialize.
 	transactions := OrderedCollection new.! !
+
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'algo3 6/14/2022 20:10:24'!
+initializeWithName: aName
+	name _ aName.! !
 
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'algo3 6/12/2022 17:33:45'!
@@ -794,6 +970,15 @@ addTransactionsTo: aCollectionOfTransactions
 	aCollectionOfTransactions addAll: transactions ! !
 
 
+!ReceptiveAccount methodsFor: 'reports' stamp: 'algo3 6/14/2022 22:51:12'!
+accept: aReport
+	aReport visitAReceptiveAccount: self.! !
+
+!ReceptiveAccount methodsFor: 'reports' stamp: 'algo3 6/14/2022 22:55:41'!
+name
+	^name.! !
+
+
 !ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
 addedTo: aPortfolio 
 	
@@ -803,6 +988,16 @@ addedTo: aPortfolio
 isComposedBy: anAccount
 
 	^self = anAccount ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'name' stamp: 'algo3 6/14/2022 20:10:03'!
+named: aName
+	^self new initializeWithName: aName.! !
 
 
 !classDefinition: #AccountReport category: 'ServiciosFinancieros-Ejercicio-Solucion'!
@@ -851,21 +1046,22 @@ addTransactionsDescriptionsOf: anAccount
 	self addBalanceDescriptionOf: anAccount.
 	^summary.! !
 
-!AccountSummary methodsFor: 'addition' stamp: 'valentina 6/14/2022 19:12:49'!
+
+!AccountSummary methodsFor: 'visit' stamp: 'valentina 6/14/2022 19:12:49'!
 visitDeposit: aDeposit
 	self add: 'Depósito por ', aDeposit value amount asString, ' pesos'.
 	! !
 
-!AccountSummary methodsFor: 'addition' stamp: 'valentina 6/14/2022 19:14:35'!
+!AccountSummary methodsFor: 'visit' stamp: 'valentina 6/14/2022 19:14:35'!
 visitDepositLeg: aTransactionDeposit
 	self add: 'Entrada por transferencia de ', aTransactionDeposit value amount asString , ' pesos'! !
 
-!AccountSummary methodsFor: 'addition' stamp: 'valentina 6/14/2022 19:13:18'!
+!AccountSummary methodsFor: 'visit' stamp: 'valentina 6/14/2022 19:13:18'!
 visitWithdraw: aWithdraw
 	self add: 'Extracción por ', aWithdraw value amount asString, ' pesos'.
 	! !
 
-!AccountSummary methodsFor: 'addition' stamp: 'valentina 6/14/2022 19:13:46'!
+!AccountSummary methodsFor: 'visit' stamp: 'valentina 6/14/2022 19:13:46'!
 visitWithdrawLeg: aTransferWithdraw
 	self add: 'Salida por transferencia de ', aTransferWithdraw value amount asString , ' pesos'! !
 
@@ -899,22 +1095,23 @@ getTransferNetOf: anAccount
 	anAccount transactions do: [:aTransaction| aTransaction accept: self].
 	^netBalance * peso.! !
 
-!AccountTransferNet methodsFor: 'main protocol' stamp: 'valentina 6/14/2022 19:20:45'!
+
+!AccountTransferNet methodsFor: 'visit' stamp: 'valentina 6/14/2022 19:20:45'!
 visitDeposit: aDeposit
 	
 	! !
 
-!AccountTransferNet methodsFor: 'main protocol' stamp: 'valentina 6/14/2022 19:19:31'!
+!AccountTransferNet methodsFor: 'visit' stamp: 'valentina 6/14/2022 19:19:31'!
 visitDepositLeg: aDepositLeg
 	netBalance _  aDepositLeg affectBalance: netBalance.
 	! !
 
-!AccountTransferNet methodsFor: 'main protocol' stamp: 'valentina 6/14/2022 19:20:57'!
+!AccountTransferNet methodsFor: 'visit' stamp: 'valentina 6/14/2022 19:20:57'!
 visitWithdraw: aWithdraw
 	
 	! !
 
-!AccountTransferNet methodsFor: 'main protocol' stamp: 'valentina 6/14/2022 19:19:44'!
+!AccountTransferNet methodsFor: 'visit' stamp: 'valentina 6/14/2022 19:19:44'!
 visitWithdrawLeg: aWithdrawLeg
 	netBalance _  aWithdrawLeg affectBalance: netBalance.
 	! !
@@ -934,6 +1131,147 @@ AccountTransferNet class
 of: anAccount
 	
 	^AccountTransferNet new getTransferNetOf: anAccount.! !
+
+
+!classDefinition: #TreePrinter category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+AccountReport subclass: #TreePrinter
+	instanceVariableNames: 'listOfNames depth account'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+
+!TreePrinter methodsFor: 'instance creation' stamp: 'valentina 6/16/2022 09:23:29'!
+initializeWith: anAccount
+	self initializeWith: anAccount andDepth: 0.! !
+
+!TreePrinter methodsFor: 'instance creation' stamp: 'valentina 6/16/2022 09:23:47'!
+initializeWith: anAccount andDepth: aDepth
+	listOfNames _ OrderedCollection new.
+	account _ anAccount.
+	depth  _ aDepth.! !
+
+
+!TreePrinter methodsFor: 'private' stamp: 'valentina 6/16/2022 09:25:49'!
+addChildrenNamesOf: aPortfolio
+	aPortfolio accounts do: [:anAccount | listOfNames addAll: (self class of: anAccount	 withDepth: (depth + 1))].! !
+
+!TreePrinter methodsFor: 'private' stamp: 'valentina 6/16/2022 09:28:59'!
+addListOfNamesIn: aPortfolio
+	
+	aPortfolio accept: self.
+	^listOfNames.! !
+
+!TreePrinter methodsFor: 'private' stamp: 'valentina 6/16/2022 09:29:28'!
+addNameOf: anAccount
+	self verifyIfAnAccountNameIsNotEmpty: anAccount.
+	listOfNames add: (self addTabTo: anAccount name).! !
+
+!TreePrinter methodsFor: 'private' stamp: 'valentina 6/16/2022 09:40:28'!
+addNumberOfTabs: aNumberOfTabsToAdd to: aLine
+	|aLineCopy|
+	aLineCopy  _ aLine copy.
+	aNumberOfTabsToAdd *2 timesRepeat:[aLineCopy _ String tab, aLineCopy]. 
+	"aclaración: agregamos 2 tabs como si fuera uno para que se note más"
+	^aLineCopy
+	! !
+
+!TreePrinter methodsFor: 'private' stamp: 'valentina 6/16/2022 09:39:52'!
+addTabTo: aLine
+	^self addNumberOfTabs: depth to: aLine ! !
+
+!TreePrinter methodsFor: 'private' stamp: 'valentina 6/16/2022 09:27:49'!
+visitAReceptiveAccount: anAccount
+	self subclassResponsibility ! !
+
+
+!TreePrinter methodsFor: 'verify' stamp: 'valentina 6/16/2022 09:26:40'!
+verifyIfAnAccountNameIsNotEmpty: anAccount
+	(anAccount name = '') ifTrue: [self error: self class canNotPrintATreeOfAnAnUnnamedAccountErrorDescription].! !
+
+
+!TreePrinter methodsFor: 'visit' stamp: 'valentina 6/16/2022 09:28:17'!
+visitPortfolio: aPortfolio
+	self subclassResponsibility ! !
+
+
+!TreePrinter methodsFor: 'main protocol' stamp: 'valentina 6/16/2022 09:24:55'!
+getTreeOfNames
+	self addListOfNamesIn: account.
+	^listOfNames.
+	
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TreePrinter class' category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+TreePrinter class
+	instanceVariableNames: ''!
+
+!TreePrinter class methodsFor: 'creation' stamp: 'valentina 6/16/2022 09:21:05'!
+of: anAccount
+	^(self new initializeWith: anAccount) getTreeOfNames.! !
+
+!TreePrinter class methodsFor: 'creation' stamp: 'valentina 6/16/2022 09:21:16'!
+of: aPortfolio withDepth: aDepth
+	^(self new initializeWith: aPortfolio andDepth: aDepth) getTreeOfNames.! !
+
+
+!TreePrinter class methodsFor: 'error' stamp: 'valentina 6/16/2022 09:20:47'!
+canNotDetailedPrintATreeOfAnAnUnnamedAccountErrorDescription
+	^'Name of account is empty'! !
+
+!TreePrinter class methodsFor: 'error' stamp: 'valentina 6/16/2022 09:37:57'!
+canNotPrintATreeOfAnAnUnnamedAccountErrorDescription
+	^'Name of account is empty'! !
+
+
+!classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+TreePrinter subclass: #PortfolioDetailedTreePrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'algo3 6/15/2022 23:27:20'!
+addBalanceOfPortfolio: aPortfolio
+	listOfNames add: (self addNumberOfTabs: depth + 1  to:('Balance = ', aPortfolio balance amount asString, ' pesos'))! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'algo3 6/15/2022 23:12:58'!
+addSummaryOf: anAccount
+	|summary| summary _ AccountSummary of: anAccount.
+	summary do:[:summaryLine| listOfNames add: (self addNumberOfTabs: depth +1 to: summaryLine)].
+	! !
+
+
+!PortfolioDetailedTreePrinter methodsFor: 'visit' stamp: 'algo3 6/15/2022 23:08:51'!
+visitAReceptiveAccount: anAccount
+	self addNameOf: anAccount. 
+	self addSummaryOf: anAccount.! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'visit' stamp: 'algo3 6/15/2022 23:05:01'!
+visitPortfolio: aPortfolio
+	self addNameOf: aPortfolio. 
+	self addChildrenNamesOf: aPortfolio.
+	self addBalanceOfPortfolio: aPortfolio
+	! !
+
+
+!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+TreePrinter subclass: #PortfolioTreePrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+
+!PortfolioTreePrinter methodsFor: 'visit' stamp: 'algo3 6/14/2022 22:58:38'!
+visitAReceptiveAccount: anAccount
+	self addNameOf: anAccount. ! !
+
+!PortfolioTreePrinter methodsFor: 'visit' stamp: 'algo3 6/15/2022 22:59:06'!
+visitPortfolio: aPortfolio
+	self addNameOf: aPortfolio. 
+	self addChildrenNamesOf: aPortfolio.
+	! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio-Solucion'!
@@ -1024,8 +1362,9 @@ value
 	^transfer value! !
 
 
-!TransferLeg methodsFor: 'reports' stamp: 'valentina 6/14/2022 19:17:14'!
-accept: anAccountReport! !
+!TransferLeg methodsFor: 'reports' stamp: 'valentina 6/16/2022 09:38:41'!
+accept: anAccountReport
+	self subclassResponsibility ! !
 
 
 !TransferLeg methodsFor: 'initialization' stamp: 'LL 9/20/2020 22:28:14'!
