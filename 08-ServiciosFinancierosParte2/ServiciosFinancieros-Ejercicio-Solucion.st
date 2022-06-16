@@ -1,75 +1,77 @@
 !classDefinition: #AccountSummaryTest category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 TestCase subclass: #AccountSummaryTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'anAccount originAccount destinationAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'VA 6/12/2022 19:01:37'!
+!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:24:56'!
+setUp
+	anAccount _ ReceptiveAccount new.
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	! !
+
+!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:23:31'!
 test01SummaryOfAnEmptyAccountIsZeroAsBalance
-	|accountWithoutTransactions expectedSummary|
-	accountWithoutTransactions  _ ReceptiveAccount new.
+	|expectedSummary|
 	expectedSummary _ OrderedCollection with: 'Balance = 0 pesos'.
 	
-	self assert: (AccountSummary of: accountWithoutTransactions)  equals: expectedSummary.
+	self assert: (AccountSummary of: anAccount)  equals: expectedSummary.
 	! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'VA 6/12/2022 19:03:24'!
+!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:23:20'!
 test02SummaryOfAnAccountWithADepositIsTheDepositValueAndItsBalance
-	|accountWithADeposit expectedSummary|
-	accountWithADeposit _ ReceptiveAccount new.
-	Deposit register: 100 * peso on: accountWithADeposit.
+	|expectedSummary|
+	
+	Deposit register: 100 * peso on: anAccount.
 	expectedSummary  _ OrderedCollection newFrom: {'Depósito por 100 pesos'.'Balance = 100 pesos'}.
-	self assert: (AccountSummary of: accountWithADeposit) equals: expectedSummary.
+	self assert: (AccountSummary of: anAccount) equals: expectedSummary.
 	
 	
 	! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'VA 6/12/2022 19:05:00'!
+!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:23:20'!
 test03SummaryOfAnAccountWithAWithdrawitIsTheWithdrawValueAndItsBalance
-	|accountWithAWithdraw expectedSummary|
-	accountWithAWithdraw _ ReceptiveAccount new.
-	Withdraw register: 50 * peso on: accountWithAWithdraw.
+	|expectedSummary|
+	
+	Withdraw register: 50 * peso on: anAccount .
 	expectedSummary  _ OrderedCollection newFrom: {'Extracción por 50 pesos'.'Balance = -50 pesos'}.
-	self assert: (AccountSummary of: accountWithAWithdraw) equals: expectedSummary.
+	self assert: (AccountSummary of: anAccount) equals: expectedSummary.
 	
 ! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'VA 6/12/2022 19:05:49'!
+!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:19:19'!
 test04SummaryOfAnAccountWithAWithdrawLegIsTheWithdrawLegValueAndItsBalance
-	|accountToTransfer expectedSummary accountTransfered|
-	accountToTransfer _ ReceptiveAccount new.
-	accountTransfered _ ReceptiveAccount new.
+	|expectedSummary |
+	
 	expectedSummary  _ OrderedCollection newFrom: {'Salida por transferencia de 20 pesos'.'Balance = -20 pesos'}.
-	Transfer amount: 20 * peso from: accountToTransfer to: accountTransfered.
-	self assert: (AccountSummary of: accountToTransfer) equals: expectedSummary.
+	Transfer amount: 20 * peso from: originAccount to: destinationAccount .
+	self assert: (AccountSummary of: originAccount ) equals: expectedSummary.
 	
 ! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'VA 6/12/2022 19:06:29'!
+!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:19:44'!
 test05SummaryOfAnAccountWithADepositLegIsTheDepositLegValueAndItsBalance
-	|accountToTransfer expectedSummary accountTransfered|
-	accountToTransfer _ ReceptiveAccount new.
-	accountTransfered _ ReceptiveAccount new.
+	|expectedSummary |
+
 	expectedSummary  _ OrderedCollection newFrom: {'Entrada por transferencia de 30 pesos'.'Balance = 30 pesos'}.
-	Transfer amount: 30 * peso from: accountToTransfer to: accountTransfered.
-	self assert: (AccountSummary of: accountTransfered ) equals: expectedSummary.
+	Transfer amount: 30 * peso from: originAccount to: destinationAccount .
+	self assert: (AccountSummary of: destinationAccount ) equals: expectedSummary.
 	
 ! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:30:21'!
+!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:24:12'!
 test06SummaryOfAnAccountWithDepositWithdrawAndTranfersIsAllItsValuesAndBalance
-	|accountWithTransactions expectedSummary secondAccount|
+	|expectedSummary |
 	expectedSummary  _ OrderedCollection newFrom: {'Depósito por 100 pesos'.'Extracción por 50 pesos'.'Salida por transferencia de 20 pesos'.'Entrada por transferencia de 30 pesos'.'Balance = 60 pesos'}.
-	accountWithTransactions _ ReceptiveAccount new.
-	secondAccount  _ ReceptiveAccount  new.
 	
-	Deposit register: 100 * peso on: accountWithTransactions.
-	Withdraw register: 50* peso on: accountWithTransactions.
-	Transfer amount: 20 * peso from: accountWithTransactions to: secondAccount.
-	Transfer amount: 30 * peso from: secondAccount to: accountWithTransactions.
+	Deposit register: 100 * peso on: anAccount .
+	Withdraw register: 50* peso on: anAccount .
+	Transfer amount: 20 * peso from: anAccount to: destinationAccount .
+	Transfer amount: 30 * peso from: destinationAccount to: anAccount .
 	
-	self assert: (AccountSummary of: accountWithTransactions) equals: expectedSummary.! !
+	self assert: (AccountSummary of: anAccount ) equals: expectedSummary.! !
 
 !AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:31:35'!
 test07SummaryOfAnEmptyPortfolioIsZeroAsBalance
@@ -79,10 +81,10 @@ test07SummaryOfAnEmptyPortfolioIsZeroAsBalance
 	
 	self assert: (AccountSummary of: aPortfolioWithZeroAccounts) equals: expectedSummary.! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:32:44'!
+!AccountSummaryTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:23:20'!
 test08SummaryOfAPortfolioWithAnAccountThatHasTransactionsIsTheExpectedSummary
-	|aPortfolioWithAnAccount anAccount expectedSummary|
-	anAccount _ ReceptiveAccount new.
+	|aPortfolioWithAnAccount expectedSummary|
+	
 	Deposit register: 10*peso on: anAccount.
 	Withdraw register: 5*peso on: anAccount.
 	
@@ -93,56 +95,51 @@ test08SummaryOfAPortfolioWithAnAccountThatHasTransactionsIsTheExpectedSummary
 
 !classDefinition: #AccountTransferNetTest category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 TestCase subclass: #AccountTransferNetTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'originAccount destinationAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 
-!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:22:34'!
+!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:29:31'!
+setUp
+	
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	! !
+
+!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:30:07'!
 test01TransferNetOfAnEmptyAccountIsZeroPesos
-	|account|
-	account _ ReceptiveAccount new.
-	self assert: (AccountTransferNet of: account) equals: 0*peso.! !
+	|anAccountWithNoTransactions|
+	anAccountWithNoTransactions _ ReceptiveAccount new.
+	self assert: (AccountTransferNet of: anAccountWithNoTransactions ) equals: 0*peso.! !
 
-!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:22:34'!
+!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:25:51'!
 test02TransferNetOfAnAccountWithAWithdrawLegIsTheWithdrawLegValue
-	|account1 account2 |
-	account1 _ ReceptiveAccount new.
-	account2 _ ReceptiveAccount new.
-	
-	Transfer amount: 20 from: account1 to: account2.
-	self assert: (AccountTransferNet of: account1) equals: -20*peso.! !
 
-!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:22:34'!
-test03TransferNetOfAnAccountWithADepositAndWithdrawLegIsTheNetValue
-	|account1 account2 |
-	account1 _ ReceptiveAccount new.
-	account2 _ ReceptiveAccount new.
-	
-	Transfer amount: 20 from: account1 to: account2.
-	Transfer amount: 50 from: account2 to: account1.
-	self assert: (AccountTransferNet of: account1) equals: 30*peso.! !
+	Transfer amount: 20 from: originAccount to: destinationAccount .
+	self assert: (AccountTransferNet of: originAccount) equals: -20*peso.! !
 
-!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:22:34'!
-test04TransferNetOfAnAccountWithADepositLegIsTheDepositLegValue
-	|account1 account2 |
-	account1 _ ReceptiveAccount new.
-	account2 _ ReceptiveAccount new.
-	
-	Transfer amount: 20 from: account1 to: account2.
-	self assert: (AccountTransferNet of: account2) equals: 20*peso.! !
+!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:27:38'!
+test03TransferNetOfAnAccountWithADepositLegIsTheDepositLegValue
 
-!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:22:34'!
+	Transfer amount: 20 from: originAccount to: destinationAccount .
+	self assert: (AccountTransferNet of: destinationAccount) equals: 20*peso.! !
+
+!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:27:45'!
+test04TransferNetOfAnAccountWithADepositAndWithdrawLegIsTheNetValue
+	
+	Transfer amount: 20 from: originAccount to: destinationAccount .
+	Transfer amount: 50 from: destinationAccount to: originAccount .
+	self assert: (AccountTransferNet of: originAccount) equals: 30*peso.! !
+
+!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:28:20'!
 test05TranferNetOnlyTakesIntoAccountTransferLegs	
-	|account1 account2 |
-	account1 _ ReceptiveAccount new.
-	account2 _ ReceptiveAccount new.
-	
-	Deposit register: 15*peso on: account1.
-	Withdraw register: 200*peso on: account1.
-	Transfer amount: 20 from: account1 to: account2.
-	Transfer amount: 50 from: account2 to: account1.
-	self assert: (AccountTransferNet of: account1) equals: 30*peso.! !
+
+	Deposit register: 15*peso on: originAccount .
+	Withdraw register: 200*peso on: originAccount .
+	Transfer amount: 20 from: originAccount to: destinationAccount .
+	Transfer amount: 50 from: destinationAccount to: originAccount .
+	self assert: (AccountTransferNet of: originAccount ) equals: 30*peso.! !
 
 !AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:35:07'!
 test06TransferNetOfAnEmptyPortfolioIsZeroPesos
@@ -152,78 +149,80 @@ test06TransferNetOfAnEmptyPortfolioIsZeroPesos
 	self assert: (AccountTransferNet of: aPortfolioWithZeroAccounts) equals: 0*peso.
 	! !
 
-!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/14/2022 19:39:45'!
+!AccountTransferNetTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:28:56'!
 test07TransferNetOfAPortfolioWithAnAccountThatHasTransactionsIsTheExpectedBalance
-	|aPortfolioWithAnAccount firstAccount secondAccount|
-	firstAccount _ ReceptiveAccount new.
-	secondAccount _ ReceptiveAccount new.
-	Transfer amount: 18 from: firstAccount to: secondAccount.
+	|aPortfolioWithAnAccount |
 	
-	aPortfolioWithAnAccount _ Portfolio with: secondAccount.
+	Transfer amount: 18 from: originAccount to: destinationAccount .
+	aPortfolioWithAnAccount _ Portfolio with: destinationAccount .
 	
 	self assert: (AccountTransferNet of: aPortfolioWithAnAccount) equals: 18*peso.! !
 
 
 !classDefinition: #PortfolioDetailedTreePrinterTest category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 TestCase subclass: #PortfolioDetailedTreePrinterTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'myAccount littlePortfolio mediumPortfolio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 
-!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:50:50'!
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:13:32'!
+setUp
+	myAccount _ ReceptiveAccount named: 'Mi cuenta'.
+	littlePortfolio _ Portfolio named: 'Portfolio chiquito'.
+	mediumPortfolio _ Portfolio named: 'Portfolio mediano'.! !
+
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:10:07'!
 test01PortfolioDetailedTreePrinterCanNotPrintAnUnnamedPortfolio
-	| aPortfolio | aPortfolio _ Portfolio named: ''.
+	| aPortfolio | 
+	aPortfolio _ Portfolio named: ''.
+	
 	self should: [ PortfolioDetailedTreePrinter of: aPortfolio]
 	       raise: Error
 	       withExceptionDo: [:anError| self assert: anError messageText equals: PortfolioDetailedTreePrinter canNotPrintATreeOfAnAnUnnamedAccountErrorDescription].
 	       ! !
 
-!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:54:09'!
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:10:56'!
 test02PortfolioDetailedTreePrinterCanPrintTheNameOfAPortfolioAndItsBalance
-	| aPortfolioChiquito expectedDetailedTree| 
-	aPortfolioChiquito _ Portfolio named: 'Portfolio chiquito'.
+	| expectedDetailedTree| 
+	
 	expectedDetailedTree _ OrderedCollection newFrom: {'Portfolio chiquito'. String tab, String tab, 'Balance = 0 pesos'}.
-	self assert: (PortfolioDetailedTreePrinter of: aPortfolioChiquito) equals: expectedDetailedTree.! !
+	self assert: (PortfolioDetailedTreePrinter of: littlePortfolio ) equals: expectedDetailedTree.! !
 
-!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:56:51'!
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:13:32'!
 test03PortfolioDetailesTreePrinterCanPrintAPortfolioWithAnAccountWithNoTransactions
-	| aPortfolioChiquito expectedDetailedTree anAccount | 
-	aPortfolioChiquito _ Portfolio named: 'Portfolio chiquito'.
-	anAccount  _ ReceptiveAccount named: 'Cuenta mía'.
-	aPortfolioChiquito add: anAccount.
-	expectedDetailedTree _ OrderedCollection newFrom: {'Portfolio chiquito'.String tab, String tab, 'Cuenta mía'.String tab, String tab,String tab, String tab, 'Balance = 0 pesos'. String tab, String tab, 'Balance = 0 pesos'}.
+	| expectedDetailedTree | 
+	littlePortfolio add: myAccount .
+	expectedDetailedTree _ OrderedCollection newFrom: {'Portfolio chiquito'.String tab, String tab, 'Mi cuenta'.String tab, String tab,String tab, String tab, 'Balance = 0 pesos'. String tab, String tab, 'Balance = 0 pesos'}.
 
-	self assert: (PortfolioDetailedTreePrinter of: aPortfolioChiquito ) equals: expectedDetailedTree.! !
+	self assert: (PortfolioDetailedTreePrinter of: littlePortfolio ) equals: expectedDetailedTree.! !
 
-!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:56:45'!
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:14:02'!
 test04PortfolioDetailedPrinterCanPrintAPortfolioAndAnAccountWithItsSummary
-	| aPortfolioChiquito expectedDetailedTree anAccount | 
-	aPortfolioChiquito _ Portfolio named: 'Portfolio chiquito'.
-	anAccount  _ ReceptiveAccount named: 'Cuenta mía'.
-	Deposit register: 5000 * peso  on: anAccount. 
-	aPortfolioChiquito add: anAccount.
-	expectedDetailedTree _ OrderedCollection newFrom: {'Portfolio chiquito'.
-						String tab, String tab, 'Cuenta mía'.
+	| expectedDetailedTree | 
+
+	Deposit register: 5000 * peso  on: myAccount . 
+	mediumPortfolio add: myAccount .
+	expectedDetailedTree _ OrderedCollection newFrom: {'Portfolio mediano'.
+						String tab, String tab, 'Mi cuenta'.
 						String tab,String tab,String tab, String tab,'Depósito por 5000 pesos'. 
 						String tab,String tab, String tab, String tab,'Balance = 5000 pesos'.
 						 String tab, String tab, 'Balance = 5000 pesos'}.
 
-	self assert: (PortfolioDetailedTreePrinter of: aPortfolioChiquito) equals: expectedDetailedTree.! !
+	self assert: (PortfolioDetailedTreePrinter of: mediumPortfolio) equals: expectedDetailedTree.! !
 
-!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:59:38'!
+!PortfolioDetailedTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:13:32'!
 test05PortfolioDetailedTreePrinterCanPrintAComposedPortfolioWithManyAccountsAndTheirSummaries
-	| angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount expectedTree |
+	| angiesAccount childrenPortfolio familyPortfolio johnsAccount expectedTree |
 	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
 	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
 	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
-	myAccount := ReceptiveAccount named: 'Cuenta mia'. 
 	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
 	
 	Deposit register: 5*peso on: myAccount.
 	Transfer amount: 5 from: angiesAccount to: johnsAccount.
 	expectedTree _ OrderedCollection newFrom: {'Portfolio de la familia'.
-   				   String tab, String tab,'Cuenta mia'.
+   				   String tab, String tab,'Mi cuenta'.
 				   String tab,String tab, String tab, String tab,'Depósito por 5 pesos'.
 				   String tab,String tab, String tab, String tab,'Balance = 5 pesos'.
     				   String tab, String tab,'Portfolio de hijos'.
@@ -457,10 +456,16 @@ test15PortfolioCanNotIncludeAnyOfTheComposedAccountOfPortfolioToAdd
 
 !classDefinition: #PortfolioTreePrinterTest category: 'ServiciosFinancieros-Ejercicio-Solucion'!
 TestCase subclass: #PortfolioTreePrinterTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'myAccount littlePortfolio mediumPortfolio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio-Solucion'!
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:09:30'!
+setUp
+	myAccount _ ReceptiveAccount named: 'Mi cuenta'.
+	littlePortfolio _ Portfolio named: 'Portfolio chiquito'.
+	mediumPortfolio _ Portfolio named: 'Portfolio mediano'.! !
 
 !PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 09:59:58'!
 test01PortfolioTreePrinterCanNotPrintAnUnnamedPortfolio
@@ -471,47 +476,42 @@ test01PortfolioTreePrinterCanNotPrintAnUnnamedPortfolio
 	       raise: Error
 	       withExceptionDo:[:anError| self assert: anError messageText equals: PortfolioTreePrinter canNotPrintATreeOfAnAnUnnamedAccountErrorDescription].! !
 
-!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 10:00:28'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:01:32'!
 test02PortfolioTreePrinterCanPrintTheNameOfAPortfolio
-	|portfolio|
-	portfolio  _ Portfolio named: 'Portfolio chiquito'.
 	
-	self assert:  (PortfolioTreePrinter of: portfolio) equals: (OrderedCollection with:'Portfolio chiquito').! !
+	self assert:  (PortfolioTreePrinter of: littlePortfolio) equals: (OrderedCollection with:'Portfolio chiquito').! !
 
-!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 10:00:35'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:09:11'!
 test03PortfolioTreePrinterCanPrintAPortfolioWithAnAccount
-	|portfolio anAccount expectedTree|
+	| expectedTree|
 	expectedTree _ OrderedCollection newFrom: {'Portfolio chiquito'. 
 			          String tab,String tab,'Mi cuenta'}.
-	portfolio  _ Portfolio named: 'Portfolio chiquito'.
-	anAccount _ ReceptiveAccount named: 'Mi cuenta'.
-	portfolio add: anAccount.
-	self assert:  (PortfolioTreePrinter of: portfolio) equals: expectedTree.! !
+			
+	littlePortfolio add: myAccount.
+	
+	self assert:  (PortfolioTreePrinter of: littlePortfolio ) equals: expectedTree.! !
 
-!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 10:00:44'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:09:06'!
 test04PortfolioTreePrinterCanPrintAComposedPortfolioWithAnAccount
-	|portfolio portfolio2 anAccount expectedTree|
+	|expectedTree|
 	expectedTree _ OrderedCollection newFrom: {'Portfolio chiquito'. 
-				   String tab,String tab,'Portfolio porfiado'. 
+				   String tab,String tab,'Portfolio mediano'. 
 				   String tab,String tab,'Mi cuenta'}.
-	portfolio  _ Portfolio named: 'Portfolio chiquito'.
-	portfolio2 _ Portfolio named: 'Portfolio porfiado'.
-	anAccount _ ReceptiveAccount named: 'Mi cuenta'.
-	portfolio add: portfolio2.
-	portfolio add: anAccount.
 
-	self assert:  (PortfolioTreePrinter of: portfolio) equals: expectedTree.! !
+	littlePortfolio add: mediumPortfolio.
+	littlePortfolio add: myAccount .
 
-!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 10:00:55'!
+	self assert:  (PortfolioTreePrinter of: littlePortfolio ) equals: expectedTree.! !
+
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'valentina 6/16/2022 12:08:58'!
 test05PortfolioTreePrinterCanPrintAComposedPortfolioWithManyAccounts
-	| angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount expectedTree|
+	| angiesAccount childrenPortfolio familyPortfolio johnsAccount expectedTree|
 	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
 	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
 	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
-	myAccount := ReceptiveAccount named: 'Cuenta mia'. 
 	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
 	expectedTree _ OrderedCollection newFrom: {'Portfolio de la familia'.
-   				   String tab, String tab,'Cuenta mia'.
+   				   String tab, String tab,'Mi cuenta'.
     				   String tab, String tab,'Portfolio de hijos'.
       			 	   String tab, String tab,String tab, String tab,'Cuenta de Juan'.
        			           String tab, String tab,String tab, String tab,'Cuenta de Angeles'}.
@@ -970,7 +970,7 @@ addTransactionsTo: aCollectionOfTransactions
 	aCollectionOfTransactions addAll: transactions ! !
 
 
-!ReceptiveAccount methodsFor: 'reports' stamp: 'algo3 6/14/2022 22:51:12'!
+!ReceptiveAccount methodsFor: 'reports' stamp: 'valentina 6/16/2022 12:32:52'!
 accept: aReport
 	aReport visitAReceptiveAccount: self.! !
 
